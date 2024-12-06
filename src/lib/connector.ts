@@ -48,7 +48,7 @@ export function frameConnector() {
     async getChainId() {
       const provider = await this.getProvider();
       const hexChainId = await provider.request({ method: "eth_chainId" });
-      return fromHex(hexChainId, "number");
+      return fromHex(hexChainId || "0x0", "number");
     },
     async isAuthorized() {
       if (!connected) {
