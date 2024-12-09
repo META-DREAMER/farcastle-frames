@@ -57,7 +57,7 @@ export function LootAllocation({ raidId }: LootAllocationProps) {
 
   return (
     <div className="container mx-auto p-0 sm:px-4 sm:py-8">
-      <Card className="w-full max-w-lg mx-0 rounded-none mx-auto sm:rounded-lg">
+      <Card className="w-full max-w-lg rounded-none mx-auto sm:rounded-lg">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">
             Split Loot

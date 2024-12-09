@@ -51,8 +51,8 @@ export function ActiveProposals({ raidId, proposals }: ActiveProposalsProps) {
   return (
     <section className="w-full max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Active Proposals</h2>
-        <Button variant="ghost" asChild>
+        <h2 className="text-2xl font-heading font-bold">Active Proposals</h2>
+        <Button variant="ghost" asChild className='pr-0'>
           <Link href={`/raids/${raidId}/proposals`}>
             View All
             <ChevronRight className="h-4 w-4" />

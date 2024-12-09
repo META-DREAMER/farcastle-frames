@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import App from "./app";
+import FramesDemo from "~/components/FramesDemo";
 
 const appUrl = process.env.NEXT_PUBLIC_URL;
 
@@ -34,5 +34,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Home() {
-  return (<App />);
+  return <FramesDemo />;
 }

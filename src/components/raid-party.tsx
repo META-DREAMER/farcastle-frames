@@ -37,7 +37,7 @@ interface RaidPartyProps {
 export function RaidParty({ roles, onApply, isApplying }: RaidPartyProps) {
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-2">Raid Party</h2>
+      <h2 className="text-2xl font-heading font-bold mb-2">Raid Party</h2>
       <div className="rounded-lg overflow-hidden">
         <ul className="flex flex-col gap-2">
           {roles.map((role, index) => (
