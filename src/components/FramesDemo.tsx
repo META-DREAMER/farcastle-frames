@@ -10,4 +10,4 @@ export default function FramesDemo(
   { title }: { title?: string } = { title: "Frames v2 Demo" }
 ) {
   return <Demo title={title} />;
-} 
+}

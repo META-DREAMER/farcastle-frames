@@ -210,9 +210,14 @@ export default function Demo(
               <Button
                 onClick={sendTx}
                 disabled={!isConnected || isSendTxPending}
-                isLoading={isSendTxPending}
               >
-                Send Transaction
+                {isSendTxPending ? (
+                  <span className="flex items-center gap-1">
+                    <span className="animate-spin">⏳</span> Sending...
+                  </span>
+                ) : (
+                  "Send Transaction"
+                )}
               </Button>
               {isSendTxError && renderError(sendTxError)}
               {txHash && (
@@ -230,12 +235,14 @@ export default function Demo(
               )}
             </div>
             <div className="mb-4">
-              <Button
-                onClick={sign}
-                disabled={!isConnected || isSignPending}
-                isLoading={isSignPending}
-              >
-                Sign Message
+              <Button onClick={sign} disabled={!isConnected || isSignPending}>
+                {isSignPending ? (
+                  <span className="flex items-center gap-1">
+                    <span className="animate-spin">⏳</span> Signing...
+                  </span>
+                ) : (
+                  "Sign Message"
+                )}
               </Button>
               {isSignError && renderError(signError)}
             </div>
@@ -243,9 +250,14 @@ export default function Demo(
               <Button
                 onClick={signTyped}
                 disabled={!isConnected || isSignTypedPending}
-                isLoading={isSignTypedPending}
               >
-                Sign Typed Data
+                {isSignTypedPending ? (
+                  <span className="flex items-center gap-1">
+                    <span className="animate-spin">⏳</span> Signing...
+                  </span>
+                ) : (
+                  "Sign Typed Data"
+                )}
               </Button>
               {isSignTypedError && renderError(signTypedError)}
             </div>
