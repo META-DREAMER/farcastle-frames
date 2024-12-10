@@ -13,7 +13,6 @@ import {
 import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
 import { ActiveProposals } from "./active-proposals";
-import { mockProposals } from "~/app/mocks/proposals";
 import { RaidParty } from "./raid-party";
 import dynamic from "next/dynamic";
 import { useRaidInfo } from "~/app/api/mockRaidApi";
@@ -132,7 +131,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
             isApplying={isApplying}
           />
 
-          <ActiveProposals raidId={raidId} proposals={mockProposals} />
+          <ActiveProposals raidId={raidId} />
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
