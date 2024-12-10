@@ -44,8 +44,8 @@ export const MultiSlider = React.forwardRef<HTMLDivElement, MultiSliderProps>(
       }))
 
       // Distribute any remaining difference
-      let currentTotal = newValue + updatedOtherSliders.reduce((sum, slider) => sum + slider.value, 0)
-      let remainingDifference = 100 - currentTotal
+      const currentTotal = newValue + updatedOtherSliders.reduce((sum, slider) => sum + slider.value, 0)
+      const remainingDifference = 100 - currentTotal
 
       if (Math.abs(remainingDifference) > 0.01) {
         const distributionFactor = remainingDifference / updatedOtherSliders.length

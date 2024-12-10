@@ -1,16 +1,18 @@
-import { useQuery, useMutation } from '@tanstack/react-query'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { type SliderData } from "~/components/multi-slider";
 
 // Mock data
 const mockRaidData = {
   totalShares: 950,
   userShares: 100,
-  ethBalance: '18540296700000000000', // 10 ETH
-  usdcBalance: '5249000000', // 5000 USDC (6 decimals)
+  ethBalance: "18540296700000000000", // 10 ETH
+  usdcBalance: "5249000000", // 5000 USDC (6 decimals)
   userYeetInfo: {
-    ethAmount: '690000000000000000',
+    ethAmount: "690000000000000000",
     purchaseTimestamp: 1699000000, // Unix timestamp of purchase
-  }
-}
+  },
+};
 
 // Add mock raid info
 const mockRaidInfo = {
@@ -19,84 +21,110 @@ const mockRaidInfo = {
   fundingGoal: 1,
   currentFunding: 0.69,
   roles: [
-    { name: "Designer", filled: true, user: { name: "Alice", avatar: "/placeholder.svg" } },
-    { name: "Production Manager", filled: true, user: { name: "Bob", avatar: "/placeholder.svg" } },
+    {
+      name: "Designer",
+      filled: true,
+      user: { name: "Alice", avatar: "/placeholder.svg" },
+    },
+    {
+      name: "Production Manager",
+      filled: true,
+      user: { name: "Bob", avatar: "/placeholder.svg" },
+    },
     { name: "Developer", filled: false },
   ],
   revenueSplit: {
     funders: 69,
     raidParty: 30,
-    castle: 1
-  }
-}
+    castle: 1,
+  },
+};
 
 // Mock API functions
 const fetchRaidInfo = async (raidId: string) => {
-  await new Promise(resolve => setTimeout(resolve, 500)) // Simulate network delay
-  return mockRaidInfo
-}
+  await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
+  return mockRaidInfo;
+};
 
 const fetchTotalShares = async (raidId: string) => {
-  await new Promise(resolve => setTimeout(resolve, 500)) // Simulate network delay
-  return mockRaidData.totalShares
-}
+  await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
+  return mockRaidData.totalShares;
+};
 
 const fetchUserShares = async (raidId: string, address: string) => {
-  await new Promise(resolve => setTimeout(resolve, 500))
-  return mockRaidData.userShares
-}
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return mockRaidData.userShares;
+};
 
 const fetchSafeBalance = async (raidId: string, tokenAddress: string) => {
-  await new Promise(resolve => setTimeout(resolve, 500))
-  return tokenAddress === '0x0000000000000000000000000000000000000000' 
-    ? mockRaidData.ethBalance 
-    : mockRaidData.usdcBalance
-}
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return tokenAddress === "0x0000000000000000000000000000000000000000"
+    ? mockRaidData.ethBalance
+    : mockRaidData.usdcBalance;
+};
 
 const fetchUserYeetInfo = async (raidId: string, address: string) => {
-  await new Promise(resolve => setTimeout(resolve, 500))
-  return mockRaidData.userYeetInfo
-}
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return mockRaidData.userYeetInfo;
+};
 
 const executeRageQuit = async (raidId: string, shares: number) => {
-  await new Promise(resolve => setTimeout(resolve, 1000))
-  return { success: true, message: 'Rage quit successful' }
-}
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  return { success: true, message: "Rage quit successful" };
+};
+
+// Mock allocation data
+export const fetchInitialAllocation = async (
+  raidId: string
+): Promise<SliderData[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return [
+    { id: 1, value: 25, label: "Ven" },
+    { id: 2, value: 25, label: "META_DREAMER" },
+    { id: 3, value: 25, label: "E2T" },
+    { id: 4, value: 25, label: "Sam" },
+  ];
+};
 
 // React Query hooks
-export const useRaidInfo = (raidId: string) => 
+export const useRaidInfo = (raidId: string) =>
   useQuery({
-    queryKey: ['raidInfo', raidId],
-    queryFn: () => fetchRaidInfo(raidId)
-  })
+    queryKey: ["raidInfo", raidId],
+    queryFn: () => fetchRaidInfo(raidId),
+  });
 
-export const useTotalShares = (raidId: string) => 
+export const useTotalShares = (raidId: string) =>
   useQuery({
-    queryKey: ['totalShares', raidId],
-    queryFn: () => fetchTotalShares(raidId)
-  })
+    queryKey: ["totalShares", raidId],
+    queryFn: () => fetchTotalShares(raidId),
+  });
 
-export const useUserShares = (raidId: string, address: string) => 
+export const useUserShares = (raidId: string, address: string) =>
   useQuery({
-    queryKey: ['userShares', raidId, address],
-    queryFn: () => fetchUserShares(raidId, address)
-  })
+    queryKey: ["userShares", raidId, address],
+    queryFn: () => fetchUserShares(raidId, address),
+  });
 
-export const useSafeBalance = (raidId: string, tokenAddress: string) => 
+export const useSafeBalance = (raidId: string, tokenAddress: string) =>
   useQuery({
-    queryKey: ['safeBalance', raidId, tokenAddress],
-    queryFn: () => fetchSafeBalance(raidId, tokenAddress)
-  })
+    queryKey: ["safeBalance", raidId, tokenAddress],
+    queryFn: () => fetchSafeBalance(raidId, tokenAddress),
+  });
 
-export const useUserYeetInfo = (raidId: string, address: string) => 
+export const useUserYeetInfo = (raidId: string, address: string) =>
   useQuery({
-    queryKey: ['userYeetInfo', raidId, address],
-    queryFn: () => fetchUserYeetInfo(raidId, address)
-  })
+    queryKey: ["userYeetInfo", raidId, address],
+    queryFn: () => fetchUserYeetInfo(raidId, address),
+  });
 
-export const useRageQuit = () => 
+export const useRageQuit = () =>
   useMutation({
-    mutationFn: (variables: { raidId: string, shares: number }) => 
-      executeRageQuit(variables.raidId, variables.shares)
-  })
+    mutationFn: (variables: { raidId: string; shares: number }) =>
+      executeRageQuit(variables.raidId, variables.shares),
+  });
 
+export const useInitialAllocation = (raidId: string) =>
+  useQuery({
+    queryKey: ["allocation", raidId],
+    queryFn: () => fetchInitialAllocation(raidId),
+  });

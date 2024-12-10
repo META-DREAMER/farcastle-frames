@@ -1,76 +1,90 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from "~/components/ui/button"
-import { Input } from "~/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card"
-import { Label } from "~/components/ui/label"
+import { useState, useEffect } from "react";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Label } from "~/components/ui/label";
 
 // Placeholder functions to simulate blockchain interactions
 const fetchRaidInfo = async (raidAddress: string) => {
   // Simulated API call
-  await new Promise(resolve => setTimeout(resolve, 1000))
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   return {
+    address: raidAddress,
     name: "Sample Raid",
     balance: "10.5",
-    memberCount: 5
-  }
-}
+    memberCount: 5,
+  };
+};
 
 const simulateYeet = async (amount: string) => {
   // Simulated transaction
-  await new Promise(resolve => setTimeout(resolve, 2000))
-  return { success: true, hash: "0x123...abc" }
-}
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  return { success: true, hash: "0x123...abc", amount };
+};
 
 export function Yeeter({ raidAddress }: { raidAddress: string }) {
-  const [ethAmount, setEthAmount] = useState('')
-  const [shares, setShares] = useState<number>(0)
-  const [raidInfo, setRaidInfo] = useState<{ name: string, balance: string, memberCount: number } | null>(null)
-  const [isYeeting, setIsYeeting] = useState(false)
-  const [yeetSuccess, setYeetSuccess] = useState(false)
+  const [ethAmount, setEthAmount] = useState("");
+  const [shares, setShares] = useState<number>(0);
+  const [raidInfo, setRaidInfo] = useState<{
+    name: string;
+    balance: string;
+    memberCount: number;
+  } | null>(null);
+  const [isYeeting, setIsYeeting] = useState(false);
+  const [yeetSuccess, setYeetSuccess] = useState(false);
 
   useEffect(() => {
     const loadRaidInfo = async () => {
-      const info = await fetchRaidInfo(raidAddress)
-      setRaidInfo(info)
-    }
-    loadRaidInfo()
-  }, [raidAddress])
+      const info = await fetchRaidInfo(raidAddress);
+      setRaidInfo(info);
+    };
+    loadRaidInfo();
+  }, [raidAddress]);
 
   useEffect(() => {
     if (ethAmount) {
       // Mock calculation - replace with actual calculation in a real scenario
-      setShares(parseFloat(ethAmount) * 1000)
+      setShares(parseFloat(ethAmount) * 1000);
     } else {
-      setShares(0)
+      setShares(0);
     }
-  }, [ethAmount])
+  }, [ethAmount]);
 
   const handleYeet = async () => {
     if (ethAmount) {
-      setIsYeeting(true)
+      setIsYeeting(true);
       try {
-        const result = await simulateYeet(ethAmount)
+        const result = await simulateYeet(ethAmount);
         if (result.success) {
-          setYeetSuccess(true)
+          setYeetSuccess(true);
           // In a real scenario, you'd want to refresh the raid info here
         }
       } catch (error) {
-        console.error("Yeet failed:", error)
+        console.error("Yeet failed:", error);
       } finally {
-        setIsYeeting(false)
+        setIsYeeting(false);
       }
     }
-  }
+  };
 
-  if (!raidInfo) return <div>Loading raid info...</div>
+  if (!raidInfo) return <div>Loading raid info...</div>;
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>{raidInfo.name}</CardTitle>
-        <CardDescription>Yeet ETH into the raid and receive shares</CardDescription>
+        <CardDescription>
+          Yeet ETH into the raid and receive shares
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -99,12 +113,12 @@ export function Yeeter({ raidAddress }: { raidAddress: string }) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button 
-          className="w-full" 
-          onClick={handleYeet} 
+        <Button
+          className="w-full"
+          onClick={handleYeet}
           disabled={!ethAmount || isYeeting}
         >
-          {isYeeting ? 'Yeeting...' : 'Yeet!'}
+          {isYeeting ? "Yeeting..." : "Yeet!"}
         </Button>
       </CardFooter>
       {yeetSuccess && (
@@ -113,6 +127,5 @@ export function Yeeter({ raidAddress }: { raidAddress: string }) {
         </div>
       )}
     </Card>
-  )
+  );
 }
-

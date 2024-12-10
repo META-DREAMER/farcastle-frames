@@ -1,12 +1,7 @@
 "use client";
 
-import WagmiProvider from '~/components/providers/WagmiProvider'
-import { DrawerCSSProvider } from '~/components/providers/DrawerProvider'
+import WagmiProvider from "~/components/providers/WagmiProvider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <WagmiProvider>
-        {children}
-    </WagmiProvider>
-  )
+  return <WagmiProvider>{children}</WagmiProvider>;
 }
