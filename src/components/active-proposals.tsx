@@ -10,7 +10,7 @@ interface Proposal {
     name: string;
     avatar: string;
   };
-  type: "funding" | "newMember" | "signal";
+  type: "funding" | "newMember" | "signal" | "loot";
   votes: {
     for: number;
     against: number;
