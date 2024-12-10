@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function ProposalsPage({ params }: Props) {
-  const { id: raidId } = params;
+export default async function RaidProposalsPage({ params }: Props) {
+  const { id: raidId } = await params;
   return <RaidProposals raidId={raidId} />;
 }

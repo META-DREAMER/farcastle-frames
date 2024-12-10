@@ -5,6 +5,7 @@ import { type SliderData } from "~/components/multi-slider";
 export interface Proposal {
   id: string;
   title: string;
+  description: string;
   creator: {
     name: string;
     avatar: string;
@@ -34,6 +35,8 @@ export const mockProposals = [
   {
     id: "1",
     title: "Increase Raid Fund Allocation by 5%",
+    description:
+      "Proposal to increase the raid fund allocation to support larger projects.",
     creator: {
       name: "Alice",
       avatar: "/avatars/alice.jpg",
@@ -48,6 +51,8 @@ export const mockProposals = [
   {
     id: "2",
     title: "Add New Member Bob to the Raid",
+    description:
+      "Proposal to add Bob as a new member given their expertise in production.",
     creator: {
       name: "Charlie",
       avatar: "/avatars/charlie.jpg",
@@ -62,6 +67,8 @@ export const mockProposals = [
   {
     id: "3",
     title: "Change Merch Design Direction",
+    description:
+      "Proposal to pivot the merch design to focus on minimalist aesthetics.",
     creator: {
       name: "David",
       avatar: "/avatars/david.jpg",
@@ -76,6 +83,8 @@ export const mockProposals = [
   {
     id: "4",
     title: "Distribute Loot to Contributors",
+    description:
+      "Proposal to distribute accumulated loot to active contributors.",
     creator: {
       name: "Eve",
       avatar: "/avatars/eve.jpg",
@@ -87,7 +96,7 @@ export const mockProposals = [
     },
     timeLeft: "4 days",
   },
-] as const;
+] satisfies Proposal[];
 
 // Add mock raid info
 const mockRaidInfo = {
