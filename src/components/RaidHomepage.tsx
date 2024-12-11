@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import sdk, { type FrameContext } from "@farcaster/frame-sdk";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { config } from "@/components/providers/WagmiProvider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,6 +20,7 @@ import { RaidParty } from "./raid-party";
 import dynamic from "next/dynamic";
 import { raidDataOptions } from "@/app/api/mockRaidApi";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { truncateAddress } from "@/lib/truncateAddress";
 
 const RageQuitDrawer = dynamic(
   () =>
@@ -44,7 +48,25 @@ const applyForRole = async (raidId: string, role: string) => {
 
 export default function RaidHomepage({ raidId }: { raidId: string }) {
   const [isApplying, setIsApplying] = useState<string | null>(null);
+  const [isSDKLoaded, setIsSDKLoaded] = useState(false);
+  const [context, setContext] = useState<FrameContext>();
   const { data: raidData } = useSuspenseQuery(raidDataOptions(raidId));
+
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { connect } = useConnect();
+
+  // Initialize Frame SDK
+  useEffect(() => {
+    const load = async () => {
+      setContext(await sdk.context);
+      sdk.actions.ready({});
+    };
+    if (sdk && !isSDKLoaded) {
+      setIsSDKLoaded(true);
+      load();
+    }
+  }, [isSDKLoaded]);
 
   // Preload the drawer after raid data is loaded
   useEffect(() => {
@@ -54,10 +76,14 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
   }, [raidData]);
 
   const handleApply = async (role: string) => {
+    if (!isConnected) {
+      alert("Please connect your wallet first");
+      return;
+    }
+
     setIsApplying(role);
     try {
       await applyForRole(raidId, role);
-      // In a real app, you'd want to refresh the raid data here
       alert(`Applied for ${role} successfully!`);
     } catch (error) {
       console.error("Application failed:", error);
@@ -68,7 +94,10 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
   };
 
   const handleYeet = () => {
-    // Placeholder for yeet functionality
+    if (!isConnected) {
+      alert("Please connect your wallet first");
+      return;
+    }
     alert(`Yeeting ETH into the raid!`);
   };
 
@@ -117,12 +146,37 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
             </div>
           </div>
 
-          <div className="w-full flex space-x-4">
-            <Button onClick={handleYeet} size="xl" className="flex-1">
-              Yeet
-            </Button>
-            <RageQuitDrawer raidId={raidId} />
+          <div className="space-y-4">
+            {address && (
+              <div className="text-sm">
+                Connected:{" "}
+                <pre className="inline">{truncateAddress(address)}</pre>
+              </div>
+            )}
+
+            <div className="flex space-x-4">
+              <Button
+                onClick={() =>
+                  isConnected
+                    ? disconnect()
+                    : connect({ connector: config.connectors[0] })
+                }
+                className="flex-1"
+              >
+                {isConnected ? "Disconnect" : "Connect Wallet"}
+              </Button>
+            </div>
+
+            {isConnected && (
+              <div className="w-full flex space-x-4">
+                <Button onClick={handleYeet} size="xl" className="flex-1">
+                  Yeet
+                </Button>
+                <RageQuitDrawer raidId={raidId} />
+              </div>
+            )}
           </div>
+
           <Separator />
           <RaidParty
             roles={raidData.roles}
