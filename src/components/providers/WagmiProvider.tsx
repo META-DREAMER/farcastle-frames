@@ -1,16 +1,17 @@
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { base } from "wagmi/chains";
 import { frameConnector } from "@/lib/connector";
+import { injected } from "wagmi/connectors";
 
-export const config = createConfig({
+export const wagmiConfig = createConfig({
   chains: [base],
   transports: {
     [base.id]: http(),
   },
   ssr: true,
-  connectors: [frameConnector()],
+  connectors: [frameConnector(), injected()],
 });
 
 export default function Provider({ children }: { children: React.ReactNode }) {
-  return <WagmiProvider config={config}>{children}</WagmiProvider>;
+  return <WagmiProvider config={wagmiConfig}>{children}</WagmiProvider>;
 }

@@ -10,7 +10,7 @@ import {
   useConnect,
 } from "wagmi";
 
-import { config } from "@/components/providers/WagmiProvider";
+import { wagmiConfig } from "@/components/providers/WagmiProvider";
 import { Button } from "@/components/ui/button";
 import { truncateAddress } from "@/lib/truncateAddress";
 
@@ -197,7 +197,7 @@ export default function Demo(
             onClick={() =>
               isConnected
                 ? disconnect()
-                : connect({ connector: config.connectors[0] })
+                : connect({ connector: wagmiConfig.connectors[0] })
             }
           >
             {isConnected ? "Disconnect" : "Connect"}
