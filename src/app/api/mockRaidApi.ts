@@ -45,12 +45,12 @@ const mockRaidInfo = {
     {
       name: "Designer",
       filled: true,
-      user: { name: "Alice", avatar: "/placeholder.svg" },
+      user: { name: "Alice", avatar: "https://avatar.iran.liara.run/public/1" },
     },
     {
       name: "Production Manager",
       filled: true,
-      user: { name: "Bob", avatar: "/placeholder.svg" },
+      user: { name: "Bob", avatar: "https://avatar.iran.liara.run/public/2" },
     },
     { name: "Developer", filled: false },
   ],
@@ -70,7 +70,7 @@ export const mockProposals = [
       "Proposal to increase the raid fund allocation to support larger projects.",
     creator: {
       name: "Alice",
-      avatar: "/avatars/alice.jpg",
+      avatar: "https://avatar.iran.liara.run/public/3",
     },
     type: "funding",
     votes: {
@@ -86,7 +86,7 @@ export const mockProposals = [
       "Proposal to add Bob as a new member given their expertise in production.",
     creator: {
       name: "Charlie",
-      avatar: "/avatars/charlie.jpg",
+      avatar: "https://avatar.iran.liara.run/public/4",
     },
     type: "newMember",
     votes: {
@@ -102,7 +102,7 @@ export const mockProposals = [
       "Proposal to pivot the merch design to focus on minimalist aesthetics.",
     creator: {
       name: "David",
-      avatar: "/avatars/david.jpg",
+      avatar: "https://avatar.iran.liara.run/public/5",
     },
     type: "signal",
     votes: {
@@ -118,7 +118,7 @@ export const mockProposals = [
       "Proposal to distribute accumulated loot to active contributors.",
     creator: {
       name: "Eve",
-      avatar: "/avatars/eve.jpg",
+      avatar: "https://avatar.iran.liara.run/public/6",
     },
     type: "loot",
     votes: {
