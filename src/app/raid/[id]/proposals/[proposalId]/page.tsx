@@ -1,5 +1,8 @@
 import { Metadata } from "next";
 import { Proposal } from "./Proposal";
+import { getQueryClient } from "~/app/get-query-client";
+import { proposalOptions } from "~/app/api/mockRaidApi";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 const appUrl = process.env.NEXT_PUBLIC_URL;
 
 interface Props {
@@ -41,5 +44,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProposalPage({ params }: Props) {
   const { id: raidId, proposalId } = await params;
-  return <Proposal raidId={raidId} proposalId={proposalId} />;
+  const queryClient = getQueryClient();
+
+  void queryClient.prefetchQuery(proposalOptions(raidId, proposalId));
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Proposal raidId={raidId} proposalId={proposalId} />
+    </HydrationBoundary>
+  );
 }

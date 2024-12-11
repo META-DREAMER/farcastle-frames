@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useQuery, useMutation } from "@tanstack/react-query";
+import {
+  useMutation,
+  queryOptions,
+  type QueryKey,
+  QueryClient,
+} from "@tanstack/react-query";
 import { type SliderData } from "~/components/multi-slider";
 
 export interface Proposal {
@@ -19,14 +24,40 @@ export interface Proposal {
 }
 
 // Mock data
-const mockRaidData = {
-  totalShares: 950,
+const mockUserRaidData = {
   userShares: 100,
-  ethBalance: "18540296700000000000", // 10 ETH
-  usdcBalance: "5249000000", // 5000 USDC (6 decimals)
   userYeetInfo: {
     ethAmount: "690000000000000000",
     purchaseTimestamp: 1699000000, // Unix timestamp of purchase
+  },
+};
+
+// Add mock raid info
+const mockRaidInfo = {
+  name: "Farcastle Genesis Merch Drop",
+  description: "Design, produce and sell the genesis merch drop for Farcastle",
+  fundingGoal: 1,
+  currentFunding: 0.69,
+  totalShares: 950,
+  ethBalance: "18540296700000000000", // 10 ETH
+  usdcBalance: "5249000000", // 5000 USDC (6 decimals)
+  roles: [
+    {
+      name: "Designer",
+      filled: true,
+      user: { name: "Alice", avatar: "/placeholder.svg" },
+    },
+    {
+      name: "Production Manager",
+      filled: true,
+      user: { name: "Bob", avatar: "/placeholder.svg" },
+    },
+    { name: "Developer", filled: false },
+  ],
+  revenueSplit: {
+    funders: 69,
+    raidParty: 30,
+    castle: 1,
   },
 };
 
@@ -98,64 +129,27 @@ export const mockProposals = [
   },
 ] satisfies Proposal[];
 
-// Add mock raid info
-const mockRaidInfo = {
-  name: "Farcastle Genesis Merch Drop",
-  description: "Design, produce and sell the genesis merch drop for Farcastle",
-  fundingGoal: 1,
-  currentFunding: 0.69,
-  roles: [
-    {
-      name: "Designer",
-      filled: true,
-      user: { name: "Alice", avatar: "/placeholder.svg" },
-    },
-    {
-      name: "Production Manager",
-      filled: true,
-      user: { name: "Bob", avatar: "/placeholder.svg" },
-    },
-    { name: "Developer", filled: false },
-  ],
-  revenueSplit: {
-    funders: 69,
-    raidParty: 30,
-    castle: 1,
-  },
-};
-
 // Mock API functions
-const fetchRaidInfo = async (raidId: string) => {
+const fetchRaidData = async (raidId: string) => {
   await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
   return mockRaidInfo;
 };
 
-const fetchTotalShares = async (raidId: string) => {
+const fetchUserRaidData = async (raidId: string, address: string) => {
   await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
-  return mockRaidData.totalShares;
-};
-
-const fetchUserShares = async (raidId: string, address: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return mockRaidData.userShares;
-};
-
-const fetchSafeBalance = async (raidId: string, tokenAddress: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return tokenAddress === "0x0000000000000000000000000000000000000000"
-    ? mockRaidData.ethBalance
-    : mockRaidData.usdcBalance;
-};
-
-const fetchUserYeetInfo = async (raidId: string, address: string) => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return mockRaidData.userYeetInfo;
+  return mockUserRaidData;
 };
 
 const executeRageQuit = async (raidId: string, shares: number) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return { success: true, message: "Rage quit successful" };
 };
+
+export const useRageQuit = () =>
+  useMutation({
+    mutationFn: (variables: { raidId: string; shares: number }) =>
+      executeRageQuit(variables.raidId, variables.shares),
+  });
 
 // Mock allocation data
 export const fetchInitialAllocation = async (
@@ -171,10 +165,14 @@ export const fetchInitialAllocation = async (
 };
 
 // Mock data fetching functions
-const fetchProposals = async (raidId: string) => {
+interface ProposalsOptions {
+  limit?: number;
+}
+
+const fetchProposals = async (raidId: string, options?: ProposalsOptions) => {
   // Simulate network delay
   await new Promise((resolve) => setTimeout(resolve, 500));
-  return mockProposals;
+  return options?.limit ? mockProposals.slice(0, options.limit) : mockProposals;
 };
 
 const fetchProposal = async (raidId: string, proposalId: string) => {
@@ -187,57 +185,33 @@ const fetchProposal = async (raidId: string, proposalId: string) => {
   return proposal;
 };
 
-// React Query hooks
-export const useRaidInfo = (raidId: string) =>
-  useQuery({
-    queryKey: ["raidInfo", raidId],
-    queryFn: () => fetchRaidInfo(raidId),
+// React Query options
+export const raidDataOptions = (raidId: string) =>
+  queryOptions({
+    queryKey: ["raid", raidId, "data"] as const,
+    queryFn: () => fetchRaidData(raidId),
   });
 
-export const useTotalShares = (raidId: string) =>
-  useQuery({
-    queryKey: ["totalShares", raidId],
-    queryFn: () => fetchTotalShares(raidId),
+export const userRaidDataOptions = (raidId: string, address: string) =>
+  queryOptions({
+    queryKey: ["raid", raidId, "userData", address] as const,
+    queryFn: () => fetchUserRaidData(raidId, address),
   });
 
-export const useUserShares = (raidId: string, address: string) =>
-  useQuery({
-    queryKey: ["userShares", raidId, address],
-    queryFn: () => fetchUserShares(raidId, address),
-  });
-
-export const useSafeBalance = (raidId: string, tokenAddress: string) =>
-  useQuery({
-    queryKey: ["safeBalance", raidId, tokenAddress],
-    queryFn: () => fetchSafeBalance(raidId, tokenAddress),
-  });
-
-export const useUserYeetInfo = (raidId: string, address: string) =>
-  useQuery({
-    queryKey: ["userYeetInfo", raidId, address],
-    queryFn: () => fetchUserYeetInfo(raidId, address),
-  });
-
-export const useRageQuit = () =>
-  useMutation({
-    mutationFn: (variables: { raidId: string; shares: number }) =>
-      executeRageQuit(variables.raidId, variables.shares),
-  });
-
-export const useInitialAllocation = (raidId: string) =>
-  useQuery({
-    queryKey: ["allocation", raidId],
+export const initialAllocationOptions = (raidId: string) =>
+  queryOptions({
+    queryKey: ["raid", raidId, "allocation"] as const,
     queryFn: () => fetchInitialAllocation(raidId),
   });
 
-export const useProposals = (raidId: string) =>
-  useQuery({
-    queryKey: ["proposals", raidId],
-    queryFn: () => fetchProposals(raidId),
+export const proposalsOptions = (raidId: string, options?: ProposalsOptions) =>
+  queryOptions({
+    queryKey: ["raid", raidId, "proposals", options] as const,
+    queryFn: () => fetchProposals(raidId, options),
   });
 
-export const useProposal = (raidId: string, proposalId: string) =>
-  useQuery({
-    queryKey: ["proposal", raidId, proposalId],
+export const proposalOptions = (raidId: string, proposalId: string) =>
+  queryOptions({
+    queryKey: ["raid", raidId, "proposals", proposalId] as const,
     queryFn: () => fetchProposal(raidId, proposalId),
   });

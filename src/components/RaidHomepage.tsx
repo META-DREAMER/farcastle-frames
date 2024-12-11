@@ -15,7 +15,8 @@ import { Separator } from "~/components/ui/separator";
 import { ActiveProposals } from "./active-proposals";
 import { RaidParty } from "./raid-party";
 import dynamic from "next/dynamic";
-import { useRaidInfo } from "~/app/api/mockRaidApi";
+import { raidDataOptions } from "~/app/api/mockRaidApi";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const RageQuitDrawer = dynamic(
   () =>
@@ -43,14 +44,14 @@ const applyForRole = async (raidId: string, role: string) => {
 
 export default function RaidHomepage({ raidId }: { raidId: string }) {
   const [isApplying, setIsApplying] = useState<string | null>(null);
-  const { data: raidData, isLoading } = useRaidInfo(raidId);
+  const { data: raidData } = useSuspenseQuery(raidDataOptions(raidId));
 
   // Preload the drawer after raid data is loaded
   useEffect(() => {
-    if (raidData && !isLoading) {
+    if (raidData) {
       preloadRageQuitDrawer();
     }
-  }, [raidData, isLoading]);
+  }, [raidData]);
 
   const handleApply = async (role: string) => {
     setIsApplying(role);
@@ -70,8 +71,6 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
     // Placeholder for yeet functionality
     alert(`Yeeting ETH into the raid!`);
   };
-
-  if (isLoading || !raidData) return <div>Loading raid info...</div>;
 
   return (
     <div className="container mx-auto p-0 sm:px-4 sm:py-8">

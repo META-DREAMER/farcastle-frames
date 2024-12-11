@@ -15,20 +15,19 @@ import { Slider } from "~/components/ui/slider";
 import { Button } from "~/components/ui/button";
 import { X } from "lucide-react";
 import {
-  useTotalShares,
-  useUserShares,
-  useSafeBalance,
+  raidDataOptions,
+  userRaidDataOptions,
   useRageQuit,
-  useUserYeetInfo,
 } from "~/app/api/mockRaidApi";
 import { customFormatEther, customFormatUnits } from "~/lib/format";
 import { Separator } from "./ui/separator";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 function SharesProgressBar({
-  totalShares,
-  userShares,
-  selectedShares,
-  originalEthAmount,
+  totalShares: totalShares,
+  userShares: userShares,
+  selectedShares: selectedShares,
+  originalEthAmount: originalEthAmount,
 }: {
   totalShares: number;
   userShares: number;
@@ -73,30 +72,24 @@ export function RageQuitDrawer({ raidId }: { raidId: string }) {
   const [sharesToRageQuit, setSharesToRageQuit] = useState(0);
   const address = "0x1234...5678"; // Mock user address
 
-  const { data: totalShares } = useTotalShares(raidId);
-  const { data: userShares } = useUserShares(raidId, address);
-  const { data: ethBalance } = useSafeBalance(
-    raidId,
-    "0x0000000000000000000000000000000000000000"
+  const { data: raidData } = useSuspenseQuery(raidDataOptions(raidId));
+  const { data: userData } = useSuspenseQuery(
+    userRaidDataOptions(raidId, address)
   );
-  const { data: usdcBalance } = useSafeBalance(
-    raidId,
-    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-  );
-  const { data: yeetInfo } = useUserYeetInfo(raidId, address);
-
   const { mutate: ragequit, status, isSuccess } = useRageQuit();
 
   const isLoading = status === "pending";
 
   // Calculate user's share of funds
   const userEthShare =
-    ethBalance && totalShares
-      ? (BigInt(sharesToRageQuit) * BigInt(ethBalance)) / BigInt(totalShares)
+    raidData.ethBalance && raidData.totalShares
+      ? (BigInt(sharesToRageQuit) * BigInt(raidData.ethBalance)) /
+        BigInt(raidData.totalShares)
       : BigInt(0);
   const userUsdcShare =
-    usdcBalance && totalShares
-      ? (BigInt(sharesToRageQuit) * BigInt(usdcBalance)) / BigInt(totalShares)
+    raidData.usdcBalance && raidData.totalShares
+      ? (BigInt(sharesToRageQuit) * BigInt(raidData.usdcBalance)) /
+        BigInt(raidData.totalShares)
       : BigInt(0);
 
   const handleRageQuit = () => {
@@ -132,10 +125,10 @@ export function RageQuitDrawer({ raidId }: { raidId: string }) {
           <div className="p-7 space-y-8">
             <div className="space-y-2">
               <SharesProgressBar
-                totalShares={Number(totalShares || 0)}
-                userShares={Number(userShares || 0)}
+                totalShares={Number(raidData.totalShares || 0)}
+                userShares={Number(userData.userShares || 0)}
                 selectedShares={sharesToRageQuit}
-                originalEthAmount={yeetInfo?.ethAmount || "0"}
+                originalEthAmount={userData.userYeetInfo?.ethAmount || "0"}
               />
             </div>
 
@@ -151,7 +144,7 @@ export function RageQuitDrawer({ raidId }: { raidId: string }) {
                   <Slider
                     id="shares-slider"
                     min={0}
-                    max={userShares || 0}
+                    max={userData.userShares || 0}
                     step={1}
                     value={[sharesToRageQuit]}
                     onValueChange={(value) => setSharesToRageQuit(value[0])}

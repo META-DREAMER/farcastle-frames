@@ -2,36 +2,17 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { ProposalRow } from "./proposal-row";
-import { useProposals } from "~/app/api/mockRaidApi";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { type Proposal, proposalsOptions } from "~/app/api/mockRaidApi";
 
 interface ActiveProposalsProps {
   raidId: string;
 }
 
 export function ActiveProposals({ raidId }: ActiveProposalsProps) {
-  const { data: proposals, isLoading } = useProposals(raidId);
-
-  if (isLoading) {
-    return (
-      <section className="w-full max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-4">
-          <div className="h-8 w-48 bg-muted rounded animate-pulse" />
-          <div className="h-8 w-24 bg-muted rounded animate-pulse" />
-        </div>
-        <div className="border rounded-lg bg-card overflow-hidden">
-          <div className="animate-pulse space-y-px">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-24 bg-muted" />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (!proposals) return null;
-
-  const displayProposals = proposals.slice(0, 3);
+  const { data: proposals } = useSuspenseQuery(
+    proposalsOptions(raidId, { limit: 3 })
+  );
 
   return (
     <section className="w-full max-w-4xl mx-auto">
@@ -46,7 +27,7 @@ export function ActiveProposals({ raidId }: ActiveProposalsProps) {
       </div>
       <div className="border rounded-lg bg-card overflow-hidden">
         <ul className="divide-y divide-border">
-          {displayProposals.map((proposal) => (
+          {proposals.map((proposal: Proposal) => (
             <ProposalRow
               key={proposal.id}
               proposal={proposal}

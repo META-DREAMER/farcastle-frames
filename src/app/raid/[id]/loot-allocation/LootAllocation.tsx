@@ -11,17 +11,19 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { MultiSlider, type SliderData } from "~/components/multi-slider";
-import { useInitialAllocation } from "~/app/api/mockRaidApi";
+import { initialAllocationOptions } from "~/app/api/mockRaidApi";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 interface LootAllocationProps {
   raidId: string;
 }
 
 export function LootAllocation({ raidId }: LootAllocationProps) {
-  const { data: initialAllocation, isLoading } = useInitialAllocation(raidId);
+  const { data: initialAllocation } = useSuspenseQuery(
+    initialAllocationOptions(raidId)
+  );
   const [allocation, setAllocation] = useState<SliderData[]>([]);
 
-  // Update local state when initial data loads
   useEffect(() => {
     if (initialAllocation) {
       setAllocation(initialAllocation);
@@ -54,29 +56,17 @@ export function LootAllocation({ raidId }: LootAllocationProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="flex justify-center items-center min-h-[200px]">
-              Loading allocation data...
-            </div>
-          ) : (
-            <MultiSlider
-              sliders={allocation}
-              onValueChange={handleSliderChange}
-              className="w-full"
-            />
-          )}
+          <MultiSlider
+            sliders={allocation}
+            onValueChange={handleSliderChange}
+            className="w-full"
+          />
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={handleDefault}
-            disabled={isLoading}
-          >
+          <Button variant="outline" onClick={handleDefault}>
             Default
           </Button>
-          <Button onClick={handleConfirm} disabled={isLoading}>
-            Confirm
-          </Button>
+          <Button onClick={handleConfirm}>Confirm</Button>
         </CardFooter>
       </Card>
     </div>
