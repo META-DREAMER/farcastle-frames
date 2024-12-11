@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import sdk, { type FrameContext } from "@farcaster/frame-sdk";
 import { useAccount } from "wagmi";
-import { config } from "@/components/providers/WagmiProvider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
