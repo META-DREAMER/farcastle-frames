@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import sdk, { type FrameContext } from "@farcaster/frame-sdk";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount } from "wagmi";
 import { config } from "@/components/providers/WagmiProvider";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,8 +53,8 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
   const { data: raidData } = useSuspenseQuery(raidDataOptions(raidId));
 
   const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { connect } = useConnect();
+  // const { disconnect } = useDisconnect();
+  // const { connect } = useConnect();
 
   // Initialize Frame SDK
   useEffect(() => {
@@ -95,7 +95,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
   };
 
   const handleYeet = () => {
-    if (!isConnected) {
+    if (!address) {
       alert("Please connect your wallet first");
       return;
     }
@@ -155,20 +155,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
               </div>
             )}
 
-            <div className="flex space-x-4">
-              <Button
-                onClick={() =>
-                  isConnected
-                    ? disconnect()
-                    : connect({ connector: config.connectors[0] })
-                }
-                className="flex-1"
-              >
-                {isConnected ? "Disconnect" : "Connect Wallet"}
-              </Button>
-            </div>
-
-            {isConnected && (
+            {address && (
               <div className="w-full flex space-x-4">
                 <Button onClick={handleYeet} size="xl" className="flex-1">
                   Yeet
