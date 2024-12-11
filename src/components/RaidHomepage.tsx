@@ -48,7 +48,14 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
 
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
-  const { user } = context || {};
+  const { user } = context || {
+    user: {
+      fid: 0,
+      username: "anon",
+      displayName: "Anon",
+      pfpUrl: "https://avatar.iran.liara.run/username?username=anon",
+    },
+  };
 
   // Initialize Frame SDK
   useEffect(() => {
@@ -84,7 +91,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
 
   const handleYeet = () => {
     if (!address) {
-      connect({ connector: wagmiConfig.connectors[1] });
+      connect({ connector: wagmiConfig.connectors[0] });
       return;
     }
     alert(`Yeeting ETH into the raid!`);
@@ -92,7 +99,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
 
   return (
     <div className="container mx-auto p-0 sm:px-4 sm:py-8">
-      <Card className="w-full max-w-2xl mx-auto rounded-none sm:rounded-lg">
+      <Card className="w-full max-w-2xl mx-auto shadow-none rounded-none sm:rounded-lg">
         <CardHeader>
           <CardTitle className="text-4xl font-bold">{raidData.name}</CardTitle>
           <CardDescription className="text-lg">
@@ -100,10 +107,6 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {user && address && (
-            <UserProfile user={user} raidId={raidId} address={address} />
-          )}
-
           <div>
             <Progress
               value={(raidData.currentFunding / raidData.fundingGoal) * 100}
@@ -114,6 +117,9 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
               goal
             </p>
           </div>
+          {user && (
+            <UserProfile user={user} raidId={raidId} address={address || ""} />
+          )}
 
           <div>
             <h3 className="text-xl font-semibold mb-4">Revenue Split</h3>
