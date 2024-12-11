@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import Raid from "./raid";
-import { getQueryClient } from "~/app/get-query-client";
+import { getQueryClient } from "@/app/get-query-client";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { raidDataOptions } from "~/app/api/mockRaidApi";
+import { raidDataOptions } from "@/app/api/mockRaidApi";
 const appUrl = process.env.NEXT_PUBLIC_URL;
 
 interface Props {

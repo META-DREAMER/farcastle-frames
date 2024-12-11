@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { RaidProposals } from "./RaidProposals";
-import { getQueryClient } from "~/app/get-query-client";
-import { proposalsOptions } from "~/app/api/mockRaidApi";
+import { getQueryClient } from "@/app/get-query-client";
+import { proposalsOptions } from "@/app/api/mockRaidApi";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 const appUrl = process.env.NEXT_PUBLIC_URL;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "~/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,9 +9,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
-import { MultiSlider, type SliderData } from "~/components/multi-slider";
-import { initialAllocationOptions } from "~/app/api/mockRaidApi";
+} from "@/components/ui/card";
+import { MultiSlider, type SliderData } from "@/components/multi-slider";
+import { initialAllocationOptions } from "@/app/api/mockRaidApi";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 interface LootAllocationProps {

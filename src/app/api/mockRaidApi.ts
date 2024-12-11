@@ -5,7 +5,7 @@ import {
   type QueryKey,
   QueryClient,
 } from "@tanstack/react-query";
-import { type SliderData } from "~/components/multi-slider";
+import { type SliderData } from "@/components/multi-slider";
 
 export interface Proposal {
   id: string;

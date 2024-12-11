@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import { Button } from "~/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import { Paintbrush, Code, ClipboardList, Megaphone, Users, Wrench } from 'lucide-react'
 
 interface RaidRole {

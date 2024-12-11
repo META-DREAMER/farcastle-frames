@@ -1,6 +1,6 @@
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { base } from "wagmi/chains";
-import { frameConnector } from "~/lib/connector";
+import { frameConnector } from "@/lib/connector";
 
 export const config = createConfig({
   chains: [base],

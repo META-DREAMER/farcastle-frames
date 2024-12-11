@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { LootAllocation } from "./LootAllocation";
-import { getQueryClient } from "~/app/get-query-client";
-import { initialAllocationOptions } from "~/app/api/mockRaidApi";
+import { getQueryClient } from "@/app/get-query-client";
+import { initialAllocationOptions } from "@/app/api/mockRaidApi";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 const appUrl = process.env.NEXT_PUBLIC_URL;
 

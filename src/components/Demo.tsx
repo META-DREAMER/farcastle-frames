@@ -10,9 +10,9 @@ import {
   useConnect,
 } from "wagmi";
 
-import { config } from "~/components/providers/WagmiProvider";
-import { Button } from "~/components/ui/button";
-import { truncateAddress } from "~/lib/truncateAddress";
+import { config } from "@/components/providers/WagmiProvider";
+import { Button } from "@/components/ui/button";
+import { truncateAddress } from "@/lib/truncateAddress";
 
 export default function Demo(
   { title }: { title?: string } = { title: "Frames v2 Demo" }

@@ -1,13 +1,13 @@
 "use client";
 
-import { Card } from "~/components/ui/card";
-import { proposalOptions } from "~/app/api/mockRaidApi";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Card } from "@/components/ui/card";
+import { proposalOptions } from "@/app/api/mockRaidApi";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   getProposalTypeIcon,
   getProposalTypeName,
-} from "~/components/proposal-row";
-import { Skeleton } from "~/components/ui/skeleton";
+} from "@/components/proposal-row";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
 

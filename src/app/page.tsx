@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import FramesDemo from "~/components/FramesDemo";
+import FramesDemo from "@/components/FramesDemo";
 
 const appUrl = process.env.NEXT_PUBLIC_URL;
 

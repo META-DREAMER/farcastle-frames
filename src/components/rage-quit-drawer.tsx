@@ -10,16 +10,16 @@ import {
   DrawerFooter,
   DrawerTrigger,
   DrawerClose,
-} from "~/components/ui/drawer";
-import { Slider } from "~/components/ui/slider";
-import { Button } from "~/components/ui/button";
+} from "@/components/ui/drawer";
+import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import {
   raidDataOptions,
   userRaidDataOptions,
   useRageQuit,
-} from "~/app/api/mockRaidApi";
-import { customFormatEther, customFormatUnits } from "~/lib/format";
+} from "@/app/api/mockRaidApi";
+import { customFormatEther, customFormatUnits } from "@/lib/format";
 import { Separator } from "./ui/separator";
 import { useSuspenseQuery } from "@tanstack/react-query";
 

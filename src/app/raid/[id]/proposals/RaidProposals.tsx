@@ -1,11 +1,11 @@
 "use client";
 
-import { Card } from "~/components/ui/card";
-import { proposalsOptions, type Proposal } from "~/app/api/mockRaidApi";
-import { ProposalRow } from "~/components/proposal-row";
+import { Card } from "@/components/ui/card";
+import { proposalsOptions, type Proposal } from "@/app/api/mockRaidApi";
+import { ProposalRow } from "@/components/proposal-row";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
-import { Skeleton } from "~/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function ProposalsContent({ raidId }: { raidId: string }) {
   const { data: proposals } = useSuspenseQuery(proposalsOptions(raidId));

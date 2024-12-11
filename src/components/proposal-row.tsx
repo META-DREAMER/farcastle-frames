@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ChevronRight, Users, Coins, MessageSquare } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Button } from "~/components/ui/button";
-import { type Proposal } from "~/app/api/mockRaidApi";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { type Proposal } from "@/app/api/mockRaidApi";
 
 export function getProposalTypeIcon(type: Proposal["type"]) {
   switch (type) {

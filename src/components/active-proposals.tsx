@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ProposalRow } from "./proposal-row";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { type Proposal, proposalsOptions } from "~/app/api/mockRaidApi";
+import { type Proposal, proposalsOptions } from "@/app/api/mockRaidApi";
 
 interface ActiveProposalsProps {
   raidId: string;
