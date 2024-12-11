@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import sdk, { type FrameContext } from "@farcaster/frame-sdk";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { config } from "@/components/providers/WagmiProvider";
@@ -77,6 +77,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
 
   const handleApply = async (role: string) => {
     if (!isConnected) {
+      console.log(context);
       alert("Please connect your wallet first");
       return;
     }
