@@ -20,6 +20,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
+          "max-h-screen",
           fontHeading.variable,
           fontSans.variable,
           fontMono.variable
