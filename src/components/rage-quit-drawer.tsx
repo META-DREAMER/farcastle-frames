@@ -135,7 +135,7 @@ export function RageQuitDrawer({
               />
             </div>
 
-            <div className="rounded-xl border bg-card space-y-6">
+            <div className="rounded-xl border bg-card touch-none space-y-6">
               <div className="p-6 pb-0 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-bold">You will burn:</h3>
@@ -151,8 +151,6 @@ export function RageQuitDrawer({
                     step={1}
                     value={[sharesToRageQuit]}
                     onValueChange={(value) => setSharesToRageQuit(value[0])}
-                    className="touch-none"
-                    onTouchStart={(e) => e.stopPropagation()}
                   />
                 </div>
               </div>
