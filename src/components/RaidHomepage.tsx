@@ -63,7 +63,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
   useEffect(() => {
     const load = async () => {
       setContext(await sdk.context);
-      sdk.actions.ready({});
+      sdk.actions.ready({ disableNativeGestures: true });
     };
     console.log({ isSDKLoaded });
     if (sdk && !isSDKLoaded) {
