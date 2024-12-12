@@ -151,6 +151,8 @@ export function RageQuitDrawer({
                     step={1}
                     value={[sharesToRageQuit]}
                     onValueChange={(value) => setSharesToRageQuit(value[0])}
+                    className="touch-none"
+                    onTouchStart={(e) => e.stopPropagation()}
                   />
                 </div>
               </div>
