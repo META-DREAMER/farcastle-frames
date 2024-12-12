@@ -15,9 +15,9 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import {
-  raidDataOptions,
   userRaidDataOptions,
   useRageQuit,
+  safeDataOptions,
 } from "@/app/api/mockRaidApi";
 import { customFormatEther, customFormatUnits } from "@/lib/format";
 import { Separator } from "./ui/separator";
@@ -61,18 +61,24 @@ function SharesProgressBar({
         </div>
         <span className="text-sm text-muted-foreground">
           {userSharesPercent.toFixed(1)}% ownership •{" "}
-          {customFormatEther(BigInt(originalEthAmount))} ETH contributed
+          {customFormatEther(originalEthAmount)} ETH contributed
         </span>
       </div>
     </div>
   );
 }
 
-export function RageQuitDrawer({ raidId }: { raidId: string }) {
+export function RageQuitDrawer({
+  raidId,
+  totalShares,
+}: {
+  raidId: string;
+  totalShares: number;
+}) {
   const [sharesToRageQuit, setSharesToRageQuit] = useState(0);
   const address = "0x1234...5678"; // Mock user address
 
-  const { data: raidData } = useSuspenseQuery(raidDataOptions(raidId));
+  const { data: safeData } = useSuspenseQuery(safeDataOptions(raidId));
   const { data: userData } = useSuspenseQuery(
     userRaidDataOptions(raidId, address)
   );
@@ -80,17 +86,14 @@ export function RageQuitDrawer({ raidId }: { raidId: string }) {
 
   const isLoading = status === "pending";
 
-  // Calculate user's share of funds
-  const userEthShare =
-    raidData.ethBalance && raidData.totalShares
-      ? (BigInt(sharesToRageQuit) * BigInt(raidData.ethBalance)) /
-        BigInt(raidData.totalShares)
-      : BigInt(0);
-  const userUsdcShare =
-    raidData.usdcBalance && raidData.totalShares
-      ? (BigInt(sharesToRageQuit) * BigInt(raidData.usdcBalance)) /
-        BigInt(raidData.totalShares)
-      : BigInt(0);
+  // Calculate user's share for each asset
+  const assetShares = safeData.assets.map((asset) => ({
+    symbol: asset.symbol,
+    decimals: asset.decimals,
+    share: totalShares
+      ? (BigInt(sharesToRageQuit) * BigInt(asset.amount)) / BigInt(totalShares)
+      : BigInt(0),
+  }));
 
   const handleRageQuit = () => {
     ragequit({ raidId, shares: sharesToRageQuit });
@@ -125,10 +128,10 @@ export function RageQuitDrawer({ raidId }: { raidId: string }) {
           <div className="p-7 space-y-8">
             <div className="space-y-2">
               <SharesProgressBar
-                totalShares={Number(raidData.totalShares || 0)}
-                userShares={Number(userData.userShares || 0)}
+                totalShares={totalShares}
+                userShares={Number(userData?.userShares || 0)}
                 selectedShares={sharesToRageQuit}
-                originalEthAmount={userData.userYeetInfo?.ethAmount || "0"}
+                originalEthAmount={userData?.userYeetInfo?.ethAmount || "0"}
               />
             </div>
 
@@ -144,7 +147,7 @@ export function RageQuitDrawer({ raidId }: { raidId: string }) {
                   <Slider
                     id="shares-slider"
                     min={0}
-                    max={userData.userShares || 0}
+                    max={userData?.userShares || 0}
                     step={1}
                     value={[sharesToRageQuit]}
                     onValueChange={(value) => setSharesToRageQuit(value[0])}
@@ -157,18 +160,17 @@ export function RageQuitDrawer({ raidId }: { raidId: string }) {
                   You will receive:
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">ETH</span>
-                    <span className="text-lg font-bold text-success">
-                      {customFormatEther(userEthShare)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">USDC</span>
-                    <span className="text-lg font-bold text-success">
-                      {customFormatUnits(userUsdcShare, 6)}
-                    </span>
-                  </div>
+                  {assetShares.map(({ symbol, decimals, share }) => (
+                    <div
+                      key={symbol}
+                      className="flex justify-between items-center"
+                    >
+                      <span className="text-sm font-medium">{symbol}</span>
+                      <span className="text-lg font-bold text-success">
+                        {customFormatUnits(share, decimals)}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

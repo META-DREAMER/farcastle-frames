@@ -1,15 +1,16 @@
-import { formatEther, formatUnits } from 'viem'
+import { formatEther, formatUnits } from "viem";
 
 export function customFormatEther(
-  wei: bigint,
+  wei: bigint | string,
   maxDecimals: number = 4,
-  rounding: "floor" | "ceil" | "round" = "round",
+  rounding: "floor" | "ceil" | "round" = "round"
 ) {
+  const weiBigInt = typeof wei === "string" ? BigInt(wei) : wei;
   const power = 10n ** BigInt(18 - maxDecimals);
-  const remainder = wei % power;
+  const remainder = weiBigInt % power;
   const firstDecimal = remainder / 10n ** BigInt(18 - maxDecimals - 1);
 
-  let b = wei - remainder;
+  let b = weiBigInt - remainder;
 
   if (rounding === "ceil" || (rounding === "round" && firstDecimal >= 5n)) {
     b += power;
@@ -22,7 +23,7 @@ export function customFormatUnits(
   value: bigint,
   decimals: number,
   maxDecimals: number = 2,
-  rounding: "floor" | "ceil" | "round" = "round",
+  rounding: "floor" | "ceil" | "round" = "round"
 ) {
   const power = 10n ** BigInt(decimals - maxDecimals);
   const remainder = value % power;
@@ -35,4 +36,4 @@ export function customFormatUnits(
   }
 
   return formatUnits(b, decimals);
-} 
+}

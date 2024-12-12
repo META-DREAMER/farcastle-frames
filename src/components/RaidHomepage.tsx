@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import sdk, { type FrameContext } from "@farcaster/frame-sdk";
 import { useAccount, useConnect } from "wagmi";
 import { Button } from "@/components/ui/button";
@@ -14,13 +14,13 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { ActiveProposals } from "./active-proposals";
+import { ActiveProposals, ActiveProposalsSkeleton } from "./active-proposals";
 import { RaidParty } from "./raid-party";
-import { UserProfile } from "./UserProfile";
 import dynamic from "next/dynamic";
 import { raidDataOptions } from "@/app/api/mockRaidApi";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { wagmiConfig } from "./providers/WagmiProvider";
+import { RaidFunders, RaidFundersSkeleton } from "./raid-funders";
 
 const RageQuitDrawer = dynamic(
   () =>
@@ -56,6 +56,8 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
       pfpUrl: "https://avatar.iran.liara.run/username?username=anon",
     },
   };
+
+  const userAddress = isSDKLoaded ? address || "0x1234...abcd" : undefined;
 
   // Initialize Frame SDK
   useEffect(() => {
@@ -97,6 +99,11 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
     alert(`Yeeting ETH into the raid!`);
   };
 
+  const handleFundersClick = () => {
+    // Handle funders click - you can add navigation or modal logic here
+    console.log("View funders clicked");
+  };
+
   return (
     <div className="container mx-auto p-0 sm:px-4 sm:py-8">
       <Card className="w-full max-w-2xl mx-auto shadow-none rounded-none sm:rounded-lg">
@@ -117,10 +124,6 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
               goal
             </p>
           </div>
-          {user && (
-            <UserProfile user={user} raidId={raidId} address={address || ""} />
-          )}
-
           <div>
             <h3 className="text-xl font-semibold mb-4">Revenue Split</h3>
             <div className="flex justify-between">
@@ -144,13 +147,26 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
               </div>
             </div>
           </div>
-
+          <Separator />
+          <Suspense fallback={<RaidFundersSkeleton />}>
+            <RaidFunders
+              raidId={raidId}
+              user={user}
+              address={userAddress}
+              onFundersClick={handleFundersClick}
+            />
+          </Suspense>
           <div className="space-y-4">
             <div className="w-full flex space-x-4">
               <Button onClick={handleYeet} size="xl" className="flex-1">
                 Yeet
               </Button>
-              {address && <RageQuitDrawer raidId={raidId} />}
+              {userAddress && (
+                <RageQuitDrawer
+                  totalShares={raidData.totalShares}
+                  raidId={raidId}
+                />
+              )}
             </div>
           </div>
 
@@ -161,7 +177,9 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
             isApplying={isApplying}
           />
 
-          <ActiveProposals raidId={raidId} />
+          <Suspense fallback={<ActiveProposalsSkeleton />}>
+            <ActiveProposals raidId={raidId} />
+          </Suspense>
         </CardContent>
         <CardFooter></CardFooter>
       </Card>

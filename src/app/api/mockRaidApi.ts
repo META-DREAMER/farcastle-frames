@@ -4,6 +4,7 @@ import {
   queryOptions,
   type QueryKey,
   QueryClient,
+  QueryOptions,
 } from "@tanstack/react-query";
 import { type SliderData } from "@/components/multi-slider";
 
@@ -23,14 +24,125 @@ export interface Proposal {
   timeLeft: string;
 }
 
+export interface SafeData {
+  totalValueUSD: number;
+  totalShares: number;
+  assets: Array<{
+    symbol: string;
+    amount: string;
+    decimals: number;
+    valueUSD: number;
+  }>;
+  funders: Array<{
+    id: string;
+    avatar: string;
+    name: string;
+    address: string;
+    shares: number;
+  }>;
+}
+
+export interface RaidData {
+  name: string;
+  description: string;
+  fundingGoal: number;
+  currentFunding: number;
+  totalShares: number;
+  roles: {
+    name: string;
+    filled: boolean;
+    user?: {
+      name: string;
+      avatar: string;
+    };
+  }[];
+  revenueSplit: {
+    funders: number;
+    raidParty: number;
+    castle: number;
+  };
+}
+
 // Mock data
 const mockUserRaidData = {
   userShares: 100,
+  userSharesPercent: 0.105,
   userYeetInfo: {
     ethAmount: "690000000000000000",
     purchaseTimestamp: 1699000000, // Unix timestamp of purchase
   },
 };
+
+// Mock safe data
+const mockSafeData = {
+  totalValueUSD: 42500, // $42,500 total value
+  totalShares: 950,
+  assets: [
+    {
+      symbol: "ETH",
+      amount: "18540296700000000000", // 18.54 ETH
+      decimals: 18,
+      valueUSD: 37080, // at $2000/ETH
+    },
+    {
+      symbol: "USDC",
+      amount: "5249000000", // 5249 USDC
+      decimals: 6,
+      valueUSD: 5249,
+    },
+  ],
+  funders: [
+    {
+      id: "1",
+      name: "Alice",
+      avatar: "https://avatar.iran.liara.run/public/1",
+      address: "0x1234567890123456789012345678901234567890",
+      shares: 200,
+    },
+    {
+      id: "2",
+      name: "Bob",
+      avatar: "https://avatar.iran.liara.run/public/2",
+      address: "0x2345678901234567890123456789012345678901",
+      shares: 150,
+    },
+    {
+      id: "3",
+      name: "Charlie",
+      avatar: "https://avatar.iran.liara.run/public/3",
+      address: "0x3456789012345678901234567890123456789012",
+      shares: 150,
+    },
+    {
+      id: "4",
+      name: "David",
+      avatar: "https://avatar.iran.liara.run/public/4",
+      address: "0x4567890123456789012345678901234567890123",
+      shares: 100,
+    },
+    {
+      id: "5",
+      name: "Eve",
+      avatar: "https://avatar.iran.liara.run/public/5",
+      address: "0x5678901234567890123456789012345678901234",
+      shares: 100,
+    },
+    {
+      id: "6",
+      name: "Frank",
+      avatar: "https://avatar.iran.liara.run/public/6",
+      address: "0x6789012345678901234567890123456789012345",
+      shares: 75,
+    },
+    {
+      id: "6",
+      name: "Frank",
+      avatar: "https://avatar.iran.liara.run/public/6",
+      address: "0x6789012345678901234567890123456789012345",
+      shares: 75,
+    },
+  ],
+} satisfies SafeData;
 
 // Add mock raid info
 const mockRaidInfo = {
@@ -39,8 +151,6 @@ const mockRaidInfo = {
   fundingGoal: 1,
   currentFunding: 0.69,
   totalShares: 950,
-  ethBalance: "18540296700000000000", // 10 ETH
-  usdcBalance: "5249000000", // 5000 USDC (6 decimals)
   roles: [
     {
       name: "Designer",
@@ -59,7 +169,7 @@ const mockRaidInfo = {
     raidParty: 30,
     castle: 1,
   },
-};
+} satisfies RaidData;
 
 // Mock proposals data
 export const mockProposals = [
@@ -135,9 +245,17 @@ const fetchRaidData = async (raidId: string) => {
   return mockRaidInfo;
 };
 
-const fetchUserRaidData = async (raidId: string, address: string) => {
+const fetchSafeData = async (raidId: string) => {
   await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
-  return mockUserRaidData;
+  return mockSafeData;
+};
+
+const fetchUserRaidData = async (
+  raidId: string,
+  address: string | undefined
+) => {
+  await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
+  return address ? mockUserRaidData : null;
 };
 
 const executeRageQuit = async (raidId: string, shares: number) => {
@@ -192,7 +310,16 @@ export const raidDataOptions = (raidId: string) =>
     queryFn: () => fetchRaidData(raidId),
   });
 
-export const userRaidDataOptions = (raidId: string, address: string) =>
+export const safeDataOptions = (raidId: string) =>
+  queryOptions({
+    queryKey: ["raid", raidId, "safe"] as const,
+    queryFn: () => fetchSafeData(raidId),
+  });
+
+export const userRaidDataOptions = (
+  raidId: string,
+  address: string | undefined
+) =>
   queryOptions({
     queryKey: ["raid", raidId, "userData", address] as const,
     queryFn: () => fetchUserRaidData(raidId, address),
