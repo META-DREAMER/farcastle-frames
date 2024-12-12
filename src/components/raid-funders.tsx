@@ -38,24 +38,26 @@ function FunderListItem({
   isCurrentUser,
 }: FunderListItemProps) {
   return (
-    <li className="flex items-center space-x-2 py-2 px-3">
+    <li className="flex relative items-center py-2 px-3">
       <Avatar className="h-6 w-6">
         <AvatarImage src={avatar} alt={name} />
         <AvatarFallback>{name.slice(0, 2)}</AvatarFallback>
       </Avatar>
-      <div className="flex-grow">
-        <div className="text-sm font-medium leading-none flex items-center gap-2">
+      <div className="flex ml-2">
+        <div className="text-sm font-medium leading-none flex items-center gap-1.5">
           <span>{name}</span>
           {isCurrentUser && (
-            <Badge variant="secondary" className="text-xs px-1.5 py-0 h-4">
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
               You
             </Badge>
           )}
         </div>
       </div>
-      <div className="flex relative items-center text-xs font-mono font-medium text-right">
-        <PercentageBar percent={percentageShare} />
-        {percentageShare.toFixed(1)}%
+      <div className="absolute right-2">
+        <div className="flex flex-grow justify-end items-center text-xs font-mono font-medium text-right">
+          <PercentageBar percent={percentageShare} />
+          {percentageShare.toFixed(1)}%
+        </div>
       </div>
     </li>
   );
@@ -121,7 +123,7 @@ export function RaidFunders({
             />
           ))}
 
-          <li>
+          <li className="relative">
             <button
               onClick={onFundersClick}
               className="flex items-center w-full py-2 px-3 hover:bg-muted transition-colors"
@@ -163,11 +165,13 @@ export function RaidFunders({
               <span className="text-sm flex-1 text-left">
                 {hiddenFunders.length} others
               </span>
-              <div className="flex font-mono items-center text-xs font-medium text-right">
-                <PercentageBar percent={calculateRemainingPercentage()} />
-                <span className="">
-                  {calculateRemainingPercentage().toFixed(1)}%
-                </span>
+              <div className="absolute right-2">
+                <div className="flex flex-grow justify-end items-center text-xs font-mono font-medium text-right">
+                  <PercentageBar percent={calculateRemainingPercentage()} />
+                  <span className="">
+                    {calculateRemainingPercentage().toFixed(1)}%
+                  </span>
+                </div>
               </div>
             </button>
           </li>
