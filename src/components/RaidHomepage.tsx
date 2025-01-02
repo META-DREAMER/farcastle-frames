@@ -20,7 +20,8 @@ import dynamic from "next/dynamic";
 import { raidDataOptions } from "@/app/api/mockRaidApi";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { wagmiConfig } from "./providers/WagmiProvider";
-import { RaidFunders, RaidFundersSkeleton } from "./raid-funders";
+import { RaidFunders, RaidFundersSkeleton } from "@/components/raid-funders";
+import { LayoutGroup, motion } from "motion/react";
 
 const RageQuitDrawer = dynamic(
   () =>
@@ -99,11 +100,6 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
     alert(`Yeeting ETH into the raid!`);
   };
 
-  const handleFundersClick = () => {
-    // Handle funders click - you can add navigation or modal logic here
-    console.log("View funders clicked");
-  };
-
   return (
     <div className="container mx-auto p-0 sm:px-4 sm:py-8">
       <Card className="w-full max-w-2xl mx-auto shadow-none rounded-none sm:rounded-lg">
@@ -148,38 +144,35 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
             </div>
           </div>
           <Separator />
-          <Suspense fallback={<RaidFundersSkeleton />}>
-            <RaidFunders
-              raidId={raidId}
-              user={user}
-              address={userAddress}
-              onFundersClick={handleFundersClick}
+          <LayoutGroup id="raid-funders">
+            <Suspense fallback={<RaidFundersSkeleton />}>
+              <RaidFunders raidId={raidId} user={user} address={userAddress} />
+            </Suspense>
+            <motion.div layout className="space-y-4">
+              <div className="w-full flex space-x-4">
+                <Button onClick={handleYeet} size="xl" className="flex-1">
+                  Yeet
+                </Button>
+                {userAddress && (
+                  <RageQuitDrawer
+                    totalShares={raidData.totalShares}
+                    raidId={raidId}
+                  />
+                )}
+              </div>
+            </motion.div>
+
+            <Separator />
+            <RaidParty
+              roles={raidData.roles}
+              onApply={handleApply}
+              isApplying={isApplying}
             />
-          </Suspense>
-          <div className="space-y-4">
-            <div className="w-full flex space-x-4">
-              <Button onClick={handleYeet} size="xl" className="flex-1">
-                Yeet
-              </Button>
-              {userAddress && (
-                <RageQuitDrawer
-                  totalShares={raidData.totalShares}
-                  raidId={raidId}
-                />
-              )}
-            </div>
-          </div>
 
-          <Separator />
-          <RaidParty
-            roles={raidData.roles}
-            onApply={handleApply}
-            isApplying={isApplying}
-          />
-
-          <Suspense fallback={<ActiveProposalsSkeleton />}>
-            <ActiveProposals raidId={raidId} />
-          </Suspense>
+            <Suspense fallback={<ActiveProposalsSkeleton />}>
+              <ActiveProposals raidId={raidId} />
+            </Suspense>
+          </LayoutGroup>
         </CardContent>
         <CardFooter></CardFooter>
       </Card>

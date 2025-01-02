@@ -20,7 +20,6 @@ function ProposalsContent({ raidId }: { raidId: string }) {
     </div>
   );
 }
-
 function ProposalsSkeleton() {
   return (
     <div className="border rounded-lg bg-card overflow-hidden">

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import "@/app/globals.css";
 import { Providers } from "@/app/providers";
 import { DrawerCSSProvider } from "@/components/providers/DrawerProvider";
+import { MotionConfig } from "motion/react";
 
 export const metadata: Metadata = {
   title: "Farcaster Frames v2 Demo",
@@ -25,9 +26,17 @@ export default function RootLayout({
           fontMono.variable
         )}
       >
-        <DrawerCSSProvider>
-          <Providers>{children}</Providers>
-        </DrawerCSSProvider>
+        <MotionConfig
+          transition={{
+            type: "spring",
+            damping: 42,
+            stiffness: 500,
+          }}
+        >
+          <DrawerCSSProvider>
+            <Providers>{children}</Providers>
+          </DrawerCSSProvider>
+        </MotionConfig>
       </body>
     </html>
   );
