@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { ActiveProposals, ActiveProposalsSkeleton } from "./active-proposals";
 import { RaidParty } from "./raid-party";
 import dynamic from "next/dynamic";
@@ -121,33 +122,25 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
             </p>
           </div>
           <div>
-            <h3 className="text-xl font-semibold mb-4">Revenue Split</h3>
-            <div className="flex justify-between">
-              <div>
-                <p className="font-medium">Funders</p>
-                <p className="text-2xl font-bold">
-                  {raidData.revenueSplit.funders}%
-                </p>
-              </div>
-              <div>
-                <p className="font-medium">Raid Party</p>
-                <p className="text-2xl font-bold">
-                  {raidData.revenueSplit.raidParty}%
-                </p>
-              </div>
-              <div>
-                <p className="font-medium">Castle</p>
-                <p className="text-2xl font-bold">
-                  {raidData.revenueSplit.castle}%
-                </p>
-              </div>
+            <h3 className="text-lg font-semibold mb-2">Revenue Split</h3>
+            <div className="flex items-center gap-4">
+              {raidData.revenueSplit.map((split) => (
+                <Badge
+                  key={split.name}
+                  variant="muted"
+                  className="flex items-center gap-2"
+                >
+                  <span className="text-sm text-secondary-foreground">
+                    {split.name}
+                  </span>
+                  <span className="font-mono text-sm font-bold">
+                    {split.percentage}%
+                  </span>
+                </Badge>
+              ))}
             </div>
           </div>
-          <Separator />
           <LayoutGroup id="raid-funders">
-            <Suspense fallback={<RaidFundersSkeleton />}>
-              <RaidFunders raidId={raidId} user={user} address={userAddress} />
-            </Suspense>
             <motion.div layout className="space-y-4">
               <div className="w-full flex space-x-4">
                 <Button onClick={handleYeet} size="xl" className="flex-1">
@@ -161,8 +154,12 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
                 )}
               </div>
             </motion.div>
-
             <Separator />
+
+            <Suspense fallback={<RaidFundersSkeleton />}>
+              <RaidFunders raidId={raidId} user={user} address={userAddress} />
+            </Suspense>
+
             <RaidParty
               roles={raidData.roles}
               onApply={handleApply}

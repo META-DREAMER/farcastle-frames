@@ -9,7 +9,7 @@ interface PercentageBarProps extends Omit<HTMLMotionProps<"div">, "style"> {
 export const PercentageBar = memo(
   ({
     percent,
-    className = "w-24 h-1.5",
+    className = "w-24 md:w-64 h-1.5",
     ...motionProps
   }: PercentageBarProps) => {
     return (

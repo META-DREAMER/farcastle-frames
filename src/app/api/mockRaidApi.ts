@@ -56,11 +56,10 @@ export interface RaidData {
       avatar: string;
     };
   }[];
-  revenueSplit: {
-    funders: number;
-    raidParty: number;
-    castle: number;
-  };
+  revenueSplit: Array<{
+    name: string;
+    percentage: number;
+  }>;
 }
 
 // Mock data
@@ -111,35 +110,35 @@ const mockSafeData = {
       name: "Charlie",
       avatar: "https://avatar.iran.liara.run/public/3",
       address: "0x3456789012345678901234567890123456789012",
-      shares: 150,
+      shares: 100,
     },
     {
       id: "4",
       name: "David",
       avatar: "https://avatar.iran.liara.run/public/4",
       address: "0x4567890123456789012345678901234567890123",
-      shares: 100,
+      shares: 70,
     },
     {
       id: "5",
       name: "Eve",
       avatar: "https://avatar.iran.liara.run/public/5",
       address: "0x5678901234567890123456789012345678901234",
-      shares: 100,
+      shares: 50,
     },
     {
       id: "6",
       name: "Frank",
       avatar: "https://avatar.iran.liara.run/public/6",
       address: "0x6789012345678901234567890123456789012345",
-      shares: 75,
+      shares: 30,
     },
     {
       id: "7",
       name: "George",
       avatar: "https://avatar.iran.liara.run/public/7",
       address: "0x8789012345678901234567890123456789012345",
-      shares: 75,
+      shares: 20,
     },
   ],
 } satisfies SafeData;
@@ -164,11 +163,11 @@ const mockRaidInfo = {
     },
     { name: "Developer", filled: false },
   ],
-  revenueSplit: {
-    funders: 69,
-    raidParty: 30,
-    castle: 1,
-  },
+  revenueSplit: [
+    { name: "Funders", percentage: 69 },
+    { name: "Raid Party", percentage: 30 },
+    { name: "Castle", percentage: 1 },
+  ],
 } satisfies RaidData;
 
 // Mock proposals data
