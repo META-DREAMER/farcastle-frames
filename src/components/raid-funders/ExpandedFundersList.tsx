@@ -29,13 +29,7 @@ const ExpandedFunderItem = memo(
         animate={{ opacity: 1, height: "auto" }}
         exit={{ opacity: 0, height: 0 }}
       >
-        <div
-          className="flex relative items-center py-2 px-3"
-          //   layout
-          //   initial={false}
-          //   animate={{ opacity: 1 }}
-          //   exit={{ opacity: 1 }}
-        >
+        <div className="flex relative items-center py-2 px-3">
           <motion.div layoutId={`avatar-${id}`}>
             <UserAvatar name={name} avatar={avatar} />
           </motion.div>
@@ -62,7 +56,7 @@ const ExpandedFunderItem = memo(
           </motion.div>
           <motion.div
             layout
-            className="absolute right-2"
+            className="absolute right-3"
             initial={index === 0 ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={index === 0 ? { opacity: 1 } : { opacity: 0 }}

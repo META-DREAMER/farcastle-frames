@@ -35,7 +35,7 @@ export const FunderListItem = memo(
             )}
           </div>
         </div>
-        <div className="absolute right-2">
+        <div className="absolute right-3">
           <div className="flex flex-grow justify-end items-center text-xs font-mono font-medium text-right">
             <PercentageBar percent={percentageShare} />
             {percentageShare.toFixed(1)}%

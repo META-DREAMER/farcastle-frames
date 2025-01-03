@@ -105,7 +105,7 @@ export function RageQuitDrawer({
         <Button
           variant="secondary"
           size="xl"
-          className="flex-1 text-destructive"
+          className="flex-1 w-full text-destructive"
         >
           Rage Quit
         </Button>
@@ -125,48 +125,47 @@ export function RageQuitDrawer({
             </DrawerDescription>
           </DrawerHeader>
 
-          <div className="p-7 space-y-8">
-            <div className="space-y-2">
-              <SharesProgressBar
-                totalShares={totalShares}
-                userShares={Number(userData?.userShares || 0)}
-                selectedShares={sharesToRageQuit}
-                originalEthAmount={userData?.userYeetInfo?.ethAmount || "0"}
-              />
-            </div>
+          <div className="px-6 space-y-6">
+            <SharesProgressBar
+              totalShares={totalShares}
+              userShares={Number(userData?.userShares || 0)}
+              selectedShares={sharesToRageQuit}
+              originalEthAmount={userData?.userYeetInfo?.ethAmount || "0"}
+            />
 
-            <div className="rounded-xl border bg-card touch-none space-y-6">
-              <div className="p-6 pb-0 space-y-4">
+            <div className="rounded-xl border bg-card touch-none">
+              <div className="p-4 pb-0">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold">You will burn:</h3>
+                  <h3 className="text-lg font-heading font-bold">
+                    You will burn:
+                  </h3>
                   <span className="text-lg text-destructive font-bold">
                     {sharesToRageQuit} Shares
                   </span>
                 </div>
-                <div className="space-y-4">
-                  <Slider
-                    id="shares-slider"
-                    min={0}
-                    max={userData?.userShares || 0}
-                    step={1}
-                    value={[sharesToRageQuit]}
-                    onValueChange={(value) => setSharesToRageQuit(value[0])}
-                  />
-                </div>
+                <Slider
+                  id="shares-slider"
+                  className="py-6"
+                  min={0}
+                  max={userData?.userShares || 0}
+                  step={1}
+                  value={[sharesToRageQuit]}
+                  onValueChange={(value) => setSharesToRageQuit(value[0])}
+                />
               </div>
               <Separator />
-              <div className="p-6 pt-0 space-y-4">
+              <div className="p-4 space-y-2">
                 <h3 className="text-lg font-heading font-bold">
                   You will receive:
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-1">
                   {assetShares.map(({ symbol, decimals, share }) => (
                     <div
                       key={symbol}
-                      className="flex justify-between items-center"
+                      className="flex  justify-between items-center"
                     >
                       <span className="text-sm font-medium">{symbol}</span>
-                      <span className="text-lg font-bold text-success">
+                      <span className="text-md font-mono font-bold text-success">
                         {customFormatUnits(share, decimals)}
                       </span>
                     </div>
@@ -176,7 +175,7 @@ export function RageQuitDrawer({
             </div>
           </div>
 
-          <DrawerFooter className="p-7 space-y-3">
+          <DrawerFooter className="px-6 space-y-3">
             <Button
               onClick={handleRageQuit}
               disabled={isLoading || sharesToRageQuit === 0}

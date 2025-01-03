@@ -62,7 +62,7 @@ export const CollapsedFundersList = memo(
           </motion.div>
         </motion.div>
         <motion.div
-          className="absolute right-2"
+          className="absolute right-3"
           layoutId="percentage-container"
         >
           <div className="flex flex-grow justify-end items-center text-xs font-mono font-medium text-right">

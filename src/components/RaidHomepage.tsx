@@ -22,7 +22,7 @@ import { raidDataOptions } from "@/app/api/mockRaidApi";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { wagmiConfig } from "./providers/WagmiProvider";
 import { RaidFunders, RaidFundersSkeleton } from "@/components/raid-funders";
-import { LayoutGroup, motion } from "motion/react";
+import { LayoutGroup } from "motion/react";
 
 const RageQuitDrawer = dynamic(
   () =>
@@ -110,50 +110,49 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
             {raidData.description}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <Progress
-              value={(raidData.currentFunding / raidData.fundingGoal) * 100}
-              className="h-2"
-            />
-            <p className="text-sm text-muted-foreground mt-2">
-              {raidData.currentFunding} ETH raised of {raidData.fundingGoal} ETH
-              goal
-            </p>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Revenue Split</h3>
-            <div className="flex items-center gap-4">
-              {raidData.revenueSplit.map((split) => (
-                <Badge
-                  key={split.name}
-                  variant="muted"
-                  className="flex items-center gap-2"
-                >
-                  <span className="text-sm text-secondary-foreground">
-                    {split.name}
-                  </span>
-                  <span className="font-mono text-sm font-bold">
-                    {split.percentage}%
-                  </span>
-                </Badge>
-              ))}
+        <LayoutGroup id="raid-funders">
+          <CardContent className="space-y-6">
+            <div className="">
+              <Progress
+                value={(raidData.currentFunding / raidData.fundingGoal) * 100}
+                className="h-2"
+              />
+              <p className="text-sm text-muted-foreground mt-2">
+                {raidData.currentFunding} ETH raised of {raidData.fundingGoal}{" "}
+                ETH goal
+              </p>
             </div>
-          </div>
-          <LayoutGroup id="raid-funders">
-            <motion.div layout className="space-y-4">
-              <div className="w-full flex space-x-4">
-                <Button onClick={handleYeet} size="xl" className="flex-1">
-                  Yeet
-                </Button>
-                {userAddress && (
-                  <RageQuitDrawer
-                    totalShares={raidData.totalShares}
-                    raidId={raidId}
-                  />
-                )}
+            <div className="space-y-2">
+              <h3 className="text-md font-semibold">Revenue Split</h3>
+              <div className="flex items-center gap-2">
+                {raidData.revenueSplit.map((split) => (
+                  <Badge
+                    key={split.name}
+                    variant="muted"
+                    className="flex items-center gap-2"
+                  >
+                    <span className="text-xs text-secondary-foreground">
+                      {split.name}
+                    </span>
+                    <span className="font-mono text-xs font-bold">
+                      {split.percentage}%
+                    </span>
+                  </Badge>
+                ))}
               </div>
-            </motion.div>
+            </div>
+            <div className="w-full flex space-x-4">
+              <Button onClick={handleYeet} size="xl" className="flex-1">
+                Yeet
+              </Button>
+              {userAddress && (
+                <RageQuitDrawer
+                  totalShares={raidData.totalShares}
+                  raidId={raidId}
+                />
+              )}
+            </div>
+
             <Separator />
 
             <Suspense fallback={<RaidFundersSkeleton />}>
@@ -169,8 +168,9 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
             <Suspense fallback={<ActiveProposalsSkeleton />}>
               <ActiveProposals raidId={raidId} />
             </Suspense>
-          </LayoutGroup>
-        </CardContent>
+          </CardContent>
+        </LayoutGroup>
+
         <CardFooter></CardFooter>
       </Card>
     </div>
