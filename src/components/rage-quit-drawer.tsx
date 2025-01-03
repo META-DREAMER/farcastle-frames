@@ -28,30 +28,45 @@ function SharesProgressBar({
   userShares: userShares,
   selectedShares: selectedShares,
   originalEthAmount: originalEthAmount,
+  safeData,
 }: {
   totalShares: number;
   userShares: number;
   selectedShares: number;
   originalEthAmount: string;
+  safeData: {
+    assets: Array<{ symbol: string; amount: string; decimals: number }>;
+  };
 }) {
   const userSharesPercent = (userShares / totalShares) * 100;
   const selectedSharesPercent = (selectedShares / userShares) * 100;
 
+  // Calculate total yeeted value (in ETH)
+  const yeetedValue = BigInt(originalEthAmount);
+
+  // Calculate current total value (in ETH)
+  const ethAsset = safeData.assets.find((asset) => asset.symbol === "ETH");
+  const currentEthValue = ethAsset ? BigInt(ethAsset.amount) : BigInt(0);
+  const userCurrentValue =
+    userShares > 0
+      ? (currentEthValue * BigInt(userShares)) / BigInt(totalShares)
+      : BigInt(0);
+
   return (
     <div className="space-y-4">
-      <div className="h-3 w-full bg-secondary rounded-full overflow-hidden">
-        <div
-          className="h-full bg-primary/20 relative"
-          style={{ width: `${userSharesPercent}%` }}
-        >
+      <div>
+        <div className="h-3 w-full bg-secondary rounded-full overflow-hidden">
           <div
-            className="h-full bg-destructive transition-all duration-300"
-            style={{ width: `${selectedSharesPercent}%` }}
-          />
+            className="h-full bg-primary/20 relative"
+            style={{ width: `${userSharesPercent}%` }}
+          >
+            <div
+              className="h-full bg-destructive transition-all duration-300"
+              style={{ width: `${selectedSharesPercent}%` }}
+            />
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col gap-1">
-        <div className="flex justify-between items-baseline">
+        <div className="flex justify-between space-x-2 items-baseline mt-4">
           <span className="text-xl font-bold">
             {userShares.toLocaleString()} shares
           </span>
@@ -59,10 +74,23 @@ function SharesProgressBar({
             of {totalShares.toLocaleString()} total
           </span>
         </div>
-        <span className="text-sm text-muted-foreground">
-          {userSharesPercent.toFixed(1)}% ownership •{" "}
-          {customFormatEther(originalEthAmount)} ETH contributed
-        </span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col items-center space-y-1">
+          <span className="font-mono font-bold">
+            {customFormatEther(yeetedValue)}
+            <span className="text-sm"> ETH</span>
+          </span>
+          <span className="text-sm text-muted-foreground">Yeeted</span>
+        </div>
+        <div className="flex flex-col items-center space-y-1">
+          <span className="font-mono font-bold">
+            {customFormatEther(userCurrentValue)}
+            <span className="text-sm"> ETH</span>
+          </span>
+          <span className="text-sm text-muted-foreground">Current value</span>
+        </div>
       </div>
     </div>
   );
@@ -131,32 +159,13 @@ export function RageQuitDrawer({
               userShares={Number(userData?.userShares || 0)}
               selectedShares={sharesToRageQuit}
               originalEthAmount={userData?.userYeetInfo?.ethAmount || "0"}
+              safeData={safeData}
             />
 
             <div className="rounded-xl border bg-card touch-none">
-              <div className="p-4 pb-0">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-heading font-bold">
-                    You will burn:
-                  </h3>
-                  <span className="text-lg text-destructive font-bold">
-                    {sharesToRageQuit} Shares
-                  </span>
-                </div>
-                <Slider
-                  id="shares-slider"
-                  className="py-6"
-                  min={0}
-                  max={userData?.userShares || 0}
-                  step={1}
-                  value={[sharesToRageQuit]}
-                  onValueChange={(value) => setSharesToRageQuit(value[0])}
-                />
-              </div>
-              <Separator />
               <div className="p-4 space-y-2">
                 <h3 className="text-lg font-heading font-bold">
-                  You will receive:
+                  You Will Receive
                 </h3>
                 <div className="space-y-1">
                   {assetShares.map(({ symbol, decimals, share }) => (
@@ -172,10 +181,29 @@ export function RageQuitDrawer({
                   ))}
                 </div>
               </div>
+              <Separator />
+
+              <div className="p-4 pb-0">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-heading font-bold">By Burning</h3>
+                  <span className="text-md font-mono text-destructive font-bold">
+                    {sharesToRageQuit} Shares
+                  </span>
+                </div>
+                <Slider
+                  id="shares-slider"
+                  className="py-6"
+                  min={0}
+                  max={userData?.userShares || 0}
+                  step={1}
+                  value={[sharesToRageQuit]}
+                  onValueChange={(value) => setSharesToRageQuit(value[0])}
+                />
+              </div>
             </div>
           </div>
 
-          <DrawerFooter className="px-6 space-y-3">
+          <DrawerFooter>
             <Button
               onClick={handleRageQuit}
               disabled={isLoading || sharesToRageQuit === 0}

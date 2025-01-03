@@ -35,15 +35,7 @@ const RageQuitDrawer = dynamic(
   }
 );
 
-// Placeholder function to simulate applying for a role
-const applyForRole = async (raidId: string, role: string) => {
-  // Simulated API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return { success: true, raidId, role };
-};
-
 export default function RaidHomepage({ raidId }: { raidId: string }) {
-  const [isApplying, setIsApplying] = useState<string | null>(null);
   const [isSDKLoaded, setIsSDKLoaded] = useState(false);
   const [context, setContext] = useState<FrameContext>();
   const { data: raidData } = useSuspenseQuery(raidDataOptions(raidId));
@@ -67,31 +59,12 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
       setContext(await sdk.context);
       sdk.actions.ready({ disableNativeGestures: true });
     };
-    console.log({ isSDKLoaded });
+    console.log({ isSDKLoaded, isConnected });
     if (sdk && !isSDKLoaded) {
       setIsSDKLoaded(true);
       load();
     }
   }, [isSDKLoaded]);
-
-  const handleApply = async (role: string) => {
-    if (!isConnected) {
-      console.log(context);
-      alert("Please connect your wallet first");
-      return;
-    }
-
-    setIsApplying(role);
-    try {
-      await applyForRole(raidId, role);
-      alert(`Applied for ${role} successfully!`);
-    } catch (error) {
-      console.error("Application failed:", error);
-      alert("Failed to apply for the role. Please try again.");
-    } finally {
-      setIsApplying(null);
-    }
-  };
 
   const handleYeet = () => {
     if (!address) {
@@ -159,11 +132,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
               <RaidFunders raidId={raidId} user={user} address={userAddress} />
             </Suspense>
 
-            <RaidParty
-              roles={raidData.roles}
-              onApply={handleApply}
-              isApplying={isApplying}
-            />
+            <RaidParty members={raidData.members} />
 
             <Suspense fallback={<ActiveProposalsSkeleton />}>
               <ActiveProposals raidId={raidId} />

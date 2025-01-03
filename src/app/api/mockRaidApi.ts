@@ -42,6 +42,14 @@ export interface SafeData {
   }>;
 }
 
+export interface RaidMember {
+  id: string;
+  name: string;
+  roles: string[];
+  avatar?: string;
+  isLeader?: boolean;
+}
+
 export interface RaidData {
   name: string;
   description: string;
@@ -60,6 +68,7 @@ export interface RaidData {
     name: string;
     percentage: number;
   }>;
+  members: RaidMember[];
 }
 
 // Mock data
@@ -162,6 +171,21 @@ const mockRaidInfo = {
       user: { name: "Bob", avatar: "https://avatar.iran.liara.run/public/2" },
     },
     { name: "Developer", filled: false },
+  ],
+  members: [
+    {
+      id: "1",
+      name: "Alice",
+      roles: ["Leader", "Designer"],
+      avatar: "https://avatar.iran.liara.run/public/1",
+      isLeader: true,
+    },
+    {
+      id: "2",
+      name: "Bob",
+      roles: ["Production Manager"],
+      avatar: "https://avatar.iran.liara.run/public/2",
+    },
   ],
   revenueSplit: [
     { name: "Funders", percentage: 69 },
