@@ -144,7 +144,7 @@ export function RageQuitDrawer({
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>
           </DrawerClose>
-          <DrawerHeader className="px-7">
+          <DrawerHeader className="px-6">
             <DrawerTitle className="text-3xl font-heading font-bold">
               Rage Quit
             </DrawerTitle>

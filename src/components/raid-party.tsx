@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { type RaidMember } from "@/app/api/mockRaidApi";
+import { motion } from "motion/react";
 
 interface RaidPartyProps {
   members: RaidMember[];
@@ -11,7 +12,7 @@ interface RaidPartyProps {
 
 export function RaidParty({ members }: RaidPartyProps) {
   return (
-    <section className="">
+    <motion.section layout className="">
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-heading text-2xl font-bold">Raid Party</h2>
         <Button variant="secondary">Join</Button>
@@ -19,7 +20,8 @@ export function RaidParty({ members }: RaidPartyProps) {
       <div className="grid grid-cols-2 gap-2">
         {members.map((member) => (
           <Link
-            href={{ pathname: `/member/${member.id}` }}
+            href={`/user/${member.id}`}
+            scroll={false}
             key={member.id}
             className="h-full"
           >
@@ -54,6 +56,6 @@ export function RaidParty({ members }: RaidPartyProps) {
           </Link>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }
