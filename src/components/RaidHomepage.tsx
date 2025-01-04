@@ -23,6 +23,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { wagmiConfig } from "./providers/WagmiProvider";
 import { RaidFunders, RaidFundersSkeleton } from "@/components/raid-funders";
 import { LayoutGroup } from "motion/react";
+import { parseEther } from "viem";
+import { customFormatEther } from "@/lib/format";
 
 const RageQuitDrawer = dynamic(
   () =>
@@ -31,6 +33,21 @@ const RageQuitDrawer = dynamic(
     })),
   {
     loading: () => null,
+    ssr: false,
+  }
+);
+
+const YeetDrawer = dynamic(
+  () =>
+    import("./yeet-modal").then((mod) => ({
+      default: mod.default,
+    })),
+  {
+    loading: () => (
+      <Button size="xl" className="flex-1 w-full">
+        Yeet
+      </Button>
+    ),
     ssr: false,
   }
 );
@@ -64,15 +81,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
       setIsSDKLoaded(true);
       load();
     }
-  }, [isSDKLoaded]);
-
-  const handleYeet = () => {
-    if (!address) {
-      connect({ connector: wagmiConfig.connectors[0] });
-      return;
-    }
-    alert(`Yeeting ETH into the raid!`);
-  };
+  }, [isSDKLoaded, isConnected]);
 
   return (
     <div className="container mx-auto p-0 sm:px-4 sm:py-8">
@@ -87,12 +96,14 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
           <CardContent className="space-y-6">
             <div className="">
               <Progress
-                value={(raidData.currentFunding / raidData.fundingGoal) * 100}
+                value={Number(
+                  (raidData.currentFunding * 100n) / raidData.fundingGoal
+                )}
                 className="h-2"
               />
               <p className="text-sm text-muted-foreground mt-2">
-                {raidData.currentFunding} ETH raised of {raidData.fundingGoal}{" "}
-                ETH goal
+                {customFormatEther(raidData.currentFunding)} ETH raised of{" "}
+                {customFormatEther(raidData.fundingGoal)} ETH goal
               </p>
             </div>
             <div className="space-y-2">
@@ -115,14 +126,30 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
               </div>
             </div>
             <div className="w-full flex space-x-4">
-              <Button onClick={handleYeet} size="xl" className="flex-1">
-                Yeet
-              </Button>
-              {userAddress && (
-                <RageQuitDrawer
-                  totalShares={raidData.totalShares}
-                  raidId={raidId}
-                />
+              {userAddress ? (
+                <>
+                  <YeetDrawer
+                    totalShares={raidData.totalShares}
+                    raidGoal={raidData.fundingGoal}
+                    treasuryBalance={raidData.currentFunding}
+                    sharePrice={parseEther("0.0005")}
+                    walletBalance={parseEther("0.785")}
+                  />
+                  <RageQuitDrawer
+                    totalShares={raidData.totalShares}
+                    raidId={raidId}
+                  />
+                </>
+              ) : (
+                <Button
+                  onClick={() =>
+                    connect({ connector: wagmiConfig.connectors[0] })
+                  }
+                  size="xl"
+                  className="flex-1"
+                >
+                  Connect Wallet
+                </Button>
               )}
             </div>
 

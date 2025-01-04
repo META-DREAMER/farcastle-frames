@@ -7,6 +7,7 @@ import {
   QueryOptions,
 } from "@tanstack/react-query";
 import { type SliderData } from "@/components/multi-slider";
+import { parseEther } from "viem";
 
 export interface Proposal {
   id: string;
@@ -53,8 +54,8 @@ export interface RaidMember {
 export interface RaidData {
   name: string;
   description: string;
-  fundingGoal: number;
-  currentFunding: number;
+  fundingGoal: bigint;
+  currentFunding: bigint;
   totalShares: number;
   roles: {
     name: string;
@@ -156,9 +157,9 @@ const mockSafeData = {
 const mockRaidInfo = {
   name: "Farcastle Genesis Merch Drop",
   description: "Design, produce and sell the genesis merch drop for Farcastle",
-  fundingGoal: 1,
-  currentFunding: 0.69,
-  totalShares: 950,
+  fundingGoal: parseEther("1"),
+  currentFunding: parseEther("0.65"),
+  totalShares: 1380,
   roles: [
     {
       name: "Designer",
