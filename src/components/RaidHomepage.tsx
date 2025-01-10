@@ -16,7 +16,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ActiveProposals, ActiveProposalsSkeleton } from "./active-proposals";
-import { RaidParty } from "./raid-party";
+import { RaidParty, RaidPartySkeleton } from "./raid-party";
 import dynamic from "next/dynamic";
 import { raidDataOptions } from "@/app/api/mockRaidApi";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -25,6 +25,7 @@ import { RaidFunders, RaidFundersSkeleton } from "@/components/raid-funders";
 import { LayoutGroup } from "motion/react";
 import { parseEther } from "viem";
 import { customFormatEther } from "@/lib/format";
+import { UserProfile } from "./UserProfile";
 
 const RageQuitDrawer = dynamic(
   () =>
@@ -39,7 +40,7 @@ const RageQuitDrawer = dynamic(
 
 const YeetDrawer = dynamic(
   () =>
-    import("./yeet-modal").then((mod) => ({
+    import("./yeet-drawer").then((mod) => ({
       default: mod.default,
     })),
   {
@@ -87,6 +88,7 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
     <div className="container mx-auto p-0 sm:px-4 sm:py-8">
       <Card className="w-full max-w-2xl mx-auto shadow-none rounded-none sm:rounded-lg">
         <CardHeader>
+          <UserProfile user={user}></UserProfile>
           <CardTitle className="text-4xl font-bold">{raidData.name}</CardTitle>
           <CardDescription className="text-lg">
             {raidData.description}
@@ -134,6 +136,8 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
                     treasuryBalance={raidData.currentFunding}
                     sharePrice={parseEther("0.0005")}
                     walletBalance={parseEther("0.785")}
+                    contractAddress={raidData.contractAddress}
+                    contractAbi={raidData.contractAbi}
                   />
                   <RageQuitDrawer
                     totalShares={raidData.totalShares}
@@ -159,7 +163,11 @@ export default function RaidHomepage({ raidId }: { raidId: string }) {
               <RaidFunders raidId={raidId} user={user} address={userAddress} />
             </Suspense>
 
-            <RaidParty members={raidData.members} />
+            <Suspense
+              fallback={<RaidPartySkeleton members={raidData.members} />}
+            >
+              <RaidParty raidId={raidId} />
+            </Suspense>
 
             <Suspense fallback={<ActiveProposalsSkeleton />}>
               <ActiveProposals raidId={raidId} />

@@ -7,7 +7,7 @@ import {
   QueryOptions,
 } from "@tanstack/react-query";
 import { type SliderData } from "@/components/multi-slider";
-import { parseEther } from "viem";
+import { parseEther, Abi } from "viem";
 
 export interface Proposal {
   id: string;
@@ -46,7 +46,10 @@ export interface SafeData {
 export interface RaidMember {
   id: string;
   name: string;
-  roles: string[];
+  roles: Array<{
+    name: string;
+    responsibility: string;
+  }>;
   avatar?: string;
   isLeader?: boolean;
 }
@@ -70,6 +73,17 @@ export interface RaidData {
     percentage: number;
   }>;
   members: RaidMember[];
+  contractAddress: `0x${string}`;
+  contractAbi: Abi;
+}
+
+export interface RaidMemberProfile {
+  member: RaidMember | null;
+  funder: {
+    address: string;
+    shares: number;
+    totalShares: number;
+  } | null;
 }
 
 // Mock data
@@ -177,14 +191,31 @@ const mockRaidInfo = {
     {
       id: "1",
       name: "Alice",
-      roles: ["Leader", "Designer"],
+      roles: [
+        {
+          name: "Leader",
+          responsibility:
+            "Lead and coordinate raid activities, manage team dynamics, and ensure project success",
+        },
+        {
+          name: "Designer",
+          responsibility:
+            "Create and iterate on design assets, maintain design system, and ensure brand consistency",
+        },
+      ],
       avatar: "https://avatar.iran.liara.run/public/1",
       isLeader: true,
     },
     {
       id: "2",
       name: "Bob",
-      roles: ["Production Manager"],
+      roles: [
+        {
+          name: "Production Manager",
+          responsibility:
+            "Manage production timeline, coordinate with vendors, and oversee quality control",
+        },
+      ],
       avatar: "https://avatar.iran.liara.run/public/2",
     },
   ],
@@ -192,6 +223,17 @@ const mockRaidInfo = {
     { name: "Funders", percentage: 69 },
     { name: "Raid Party", percentage: 30 },
     { name: "Castle", percentage: 1 },
+  ],
+  contractAddress:
+    "0x4bBFD120d9f352A0BEd7a014bd67913a2007a878" as `0x${string}`,
+  contractAbi: [
+    {
+      name: "yeet",
+      type: "function",
+      stateMutability: "payable",
+      inputs: [],
+      outputs: [],
+    },
   ],
 } satisfies RaidData;
 
@@ -365,4 +407,44 @@ export const proposalOptions = (raidId: string, proposalId: string) =>
   queryOptions({
     queryKey: ["raid", raidId, "proposals", proposalId] as const,
     queryFn: () => fetchProposal(raidId, proposalId),
+  });
+
+const fetchRaidMemberProfile = async (
+  raidId: string,
+  userId: string
+): Promise<RaidMemberProfile> => {
+  await new Promise((resolve) => setTimeout(resolve, 300)); // Simulate network delay
+
+  // In a real API, this would be a single efficient query
+  // For mock data, we'll compose it from our existing data
+  const member = mockRaidInfo.members.find((m) => m.id === userId) || null;
+  const funder = mockSafeData.funders.find((f) => f.id === userId);
+
+  return {
+    member,
+    funder: funder
+      ? {
+          address: funder.address,
+          shares: funder.shares,
+          totalShares: mockSafeData.totalShares,
+        }
+      : null,
+  };
+};
+
+export const raidMemberProfileOptions = (raidId: string, userId: string) =>
+  queryOptions({
+    queryKey: ["raid", raidId, "member", userId] as const,
+    queryFn: () => fetchRaidMemberProfile(raidId, userId),
+  });
+
+const fetchRaidPartyMembers = async (raidId: string): Promise<RaidMember[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 300)); // Simulate network delay
+  return mockRaidInfo.members;
+};
+
+export const raidPartyMembersOptions = (raidId: string) =>
+  queryOptions({
+    queryKey: ["raid", raidId, "party-members"] as const,
+    queryFn: () => fetchRaidPartyMembers(raidId),
   });
