@@ -28,29 +28,17 @@ function SharesProgressBar({
   userShares: userShares,
   selectedShares: selectedShares,
   originalEthAmount: originalEthAmount,
-  safeData,
 }: {
   totalShares: number;
   userShares: number;
   selectedShares: number;
   originalEthAmount: string;
-  safeData: {
-    assets: Array<{ symbol: string; amount: string; decimals: number }>;
-  };
 }) {
   const userSharesPercent = (userShares / totalShares) * 100;
   const selectedSharesPercent = (selectedShares / userShares) * 100;
 
   // Calculate total yeeted value (in ETH)
   const yeetedValue = BigInt(originalEthAmount);
-
-  // Calculate current total value (in ETH)
-  const ethAsset = safeData.assets.find((asset) => asset.symbol === "ETH");
-  const currentEthValue = ethAsset ? BigInt(ethAsset.amount) : BigInt(0);
-  const userCurrentValue =
-    userShares > 0
-      ? (currentEthValue * BigInt(userShares)) / BigInt(totalShares)
-      : BigInt(0);
 
   return (
     <div className="space-y-4">
@@ -67,29 +55,20 @@ function SharesProgressBar({
           </div>
         </div>
         <div className="flex justify-between space-x-2 items-baseline mt-4">
-          <span className="text-xl font-bold">
-            {userShares.toLocaleString()} shares
-          </span>
-          <span className="text-sm text-muted-foreground">
-            of {totalShares.toLocaleString()} total
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col items-center space-y-1">
-          <span className="font-mono font-bold">
-            {customFormatEther(yeetedValue)}
-            <span className="text-sm"> ETH</span>
-          </span>
-          <span className="text-sm text-muted-foreground">Yeeted</span>
-        </div>
-        <div className="flex flex-col items-center space-y-1">
-          <span className="font-mono font-bold">
-            {customFormatEther(userCurrentValue)}
-            <span className="text-sm"> ETH</span>
-          </span>
-          <span className="text-sm text-muted-foreground">Current value</span>
+          <div className="flex flex-col">
+            <span className="text-xl font-bold">
+              {userShares.toLocaleString()} shares
+            </span>
+            <span className="text-sm text-muted-foreground">
+              {customFormatEther(yeetedValue)} ETH yeeted
+            </span>
+          </div>
+          <div className="text-right">
+            <span className="text-xl font-bold">
+              {userSharesPercent.toFixed(2)}%
+            </span>
+            <div className="text-sm text-muted-foreground">Your ownership</div>
+          </div>
         </div>
       </div>
     </div>
@@ -132,8 +111,8 @@ export function RageQuitDrawer({
       <DrawerTrigger asChild>
         <Button
           variant="secondary"
-          size="xl"
-          className="flex-1 w-full text-destructive"
+          size="lg"
+          className="flex-1 h-12 w-full text-destructive"
         >
           Rage Quit
         </Button>
@@ -159,7 +138,6 @@ export function RageQuitDrawer({
               userShares={Number(userData?.userShares || 0)}
               selectedShares={sharesToRageQuit}
               originalEthAmount={userData?.userYeetInfo?.ethAmount || "0"}
-              safeData={safeData}
             />
 
             <div className="rounded-xl border bg-card touch-none">
@@ -213,7 +191,7 @@ export function RageQuitDrawer({
               {isLoading ? "Confirming..." : "Rage Quit"}
             </Button>
             {isSuccess && (
-              <p className="text-green-600 text-center text-sm font-medium">
+              <p className="text-success text-center text-sm font-medium">
                 Rage quit successful! Your funds have been withdrawn.
               </p>
             )}

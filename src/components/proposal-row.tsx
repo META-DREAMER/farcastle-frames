@@ -68,11 +68,9 @@ export function ProposalRow({ proposal, raidId }: ProposalRowProps) {
             <div className="flex items-center">
               <div className="text-right mr-4">
                 <div className="text-sm font-medium">
-                  <span className="text-green-600">
-                    {proposal.votes.for} For
-                  </span>{" "}
+                  <span className="text-success">{proposal.votes.for} For</span>{" "}
                   /{" "}
-                  <span className="text-red-600">
+                  <span className="text-destructive">
                     {proposal.votes.against} Against
                   </span>
                 </div>

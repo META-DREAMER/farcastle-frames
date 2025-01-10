@@ -122,7 +122,7 @@ export function Yeeter({ raidAddress }: { raidAddress: string }) {
         </Button>
       </CardFooter>
       {yeetSuccess && (
-        <div className="mt-4 text-center text-green-600">
+        <div className="mt-4 text-center text-success">
           Successfully yeeted into the raid!
         </div>
       )}

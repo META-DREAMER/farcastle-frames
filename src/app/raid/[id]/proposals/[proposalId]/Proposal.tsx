@@ -45,13 +45,13 @@ function ProposalContent({ raidId, proposalId }: ProposalProps) {
       <div className="bg-muted p-4 rounded-lg mb-6">
         <div className="grid grid-cols-2 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-success">
               {proposal.votes.for}
             </div>
             <div className="text-sm text-muted-foreground">For</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-destructive">
               {proposal.votes.against}
             </div>
             <div className="text-sm text-muted-foreground">Against</div>

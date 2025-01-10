@@ -108,7 +108,7 @@ export default function YeetDrawer({
   return (
     <Drawer shouldScaleBackground>
       <DrawerTrigger asChild>
-        <Button size="xl" className="flex-1 w-full">
+        <Button size="lg" className="flex-1 h-12 w-full">
           Yeet
         </Button>
       </DrawerTrigger>
@@ -131,7 +131,7 @@ export default function YeetDrawer({
             <div className="space-y-4">
               <div className="relative h-2 rounded-full overflow-hidden">
                 <div
-                  className="absolute h-full bg-primary transition-all duration-500"
+                  className="absolute h-full bg-success transition-all duration-500"
                   style={{
                     width: `${ownershipPercentage}%`,
                   }}
@@ -147,8 +147,13 @@ export default function YeetDrawer({
 
               <div className="flex justify-between items-baseline">
                 <div className="space-y-1">
-                  <span className="text-lg font-bold">
-                    {selectedShares.toString()} shares
+                  <span
+                    className={`text-lg font-bold ${
+                      selectedShares > 0 ? "text-success" : ""
+                    }`}
+                  >
+                    {selectedShares > 0 ? `+${selectedShares.toString()}` : "0"}{" "}
+                    shares
                   </span>
                   <div className="text-sm text-muted-foreground">
                     {selectedShares > 0
@@ -232,7 +237,7 @@ export default function YeetDrawer({
               </div>
             )}
             <Button
-              className="w-full h-14 text-lg font-semibold"
+              className="w-full h-14 text-lg"
               disabled={selectedShares <= 0 || !isConnected || isLoading}
               onClick={handleYeet}
             >
@@ -244,9 +249,9 @@ export default function YeetDrawer({
               ) : (
                 <>
                   Yeet{" "}
-                  {selectedShares > 0
+                  {/* {selectedShares > 0
                     ? `${customFormatEther(ethAmount)} ETH`
-                    : ""}
+                    : ""} */}
                 </>
               )}
             </Button>
