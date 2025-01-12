@@ -105,6 +105,11 @@ export default function YeetDrawer({
     treasuryBalance
   );
 
+  // Essential calculations
+  const maxSharesValue = Number(walletBalance ?? 0n) / Number(sharePrice);
+  const currentShareValue = Number(ethAmount / sharePrice);
+  const yeetButtonDisabled = selectedShares <= 0 || !isConnected || isLoading;
+
   return (
     <Drawer shouldScaleBackground>
       <DrawerTrigger asChild>
@@ -179,11 +184,7 @@ export default function YeetDrawer({
                         id="eth-input"
                         type="number"
                         step={customFormatEther(sharePrice)}
-                        value={
-                          ethAmount > 0n
-                            ? customFormatEther(ethAmount)
-                            : customFormatEther(ethAmount)
-                        }
+                        value={customFormatEther(ethAmount)}
                         onChange={(e) => handleEthInputChange(e.target.value)}
                         className="!text-4xl max-w-56 h-16 font-bold font-mono text-center w-full border-none shadow-none"
                         min="0"
@@ -198,13 +199,14 @@ export default function YeetDrawer({
 
                     <div className="">
                       <Slider
-                        value={[Number(ethAmount / sharePrice)]}
+                        value={[currentShareValue]}
                         onValueChange={([value]) =>
                           handleSharesInputChange(
                             BigInt(Math.floor(value)) * sharePrice
                           )
                         }
-                        max={Number(walletBalance ?? 0n) / Number(sharePrice)}
+                        min={1}
+                        max={maxSharesValue}
                         step={1}
                         className="mt-4 py-6"
                       />
@@ -238,7 +240,7 @@ export default function YeetDrawer({
             )}
             <Button
               className="w-full h-14 text-lg"
-              disabled={selectedShares <= 0 || !isConnected || isLoading}
+              disabled={yeetButtonDisabled}
               onClick={handleYeet}
             >
               {isLoading ? (
@@ -247,12 +249,7 @@ export default function YeetDrawer({
                   {isConfirming ? "Confirming..." : "Sending..."}
                 </span>
               ) : (
-                <>
-                  Yeet{" "}
-                  {/* {selectedShares > 0
-                    ? `${customFormatEther(ethAmount)} ETH`
-                    : ""} */}
-                </>
+                <>Yeet</>
               )}
             </Button>
           </DrawerFooter>
